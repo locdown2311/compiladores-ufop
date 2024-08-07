@@ -53,17 +53,20 @@ jobs:
       run: |
         echo "Compiler Output:"
         echo "${{ steps.java_compiler.outputs.compiler_output }}"
-    - name: Create Release ZIP
-      if: success()
-      run: |
-        cd src/
-        pwd
-        CURRENT_DATE=$(date +"%Y-%m-%d")
-        zip -r release-$CURRENT_DATE.zip .
-                
+            - name: Zip Release
+  # You may pin to the exact commit or the version.
+  # uses: TheDoctor0/zip-release@b57d897cb5d60cb78b51a507f63fa184cfe35554
+    - name: Making a zip
+      uses: TheDoctor0/zip-release@0.7.6
+      with:
+        # Filename for archive
+        filename: release.zip
+        # Base path for archive files
+        path: .
+           
     - name: Upload Release
       uses: actions/upload-artifact@v2
       if: success()
       with:
         name: release-$CURRENT_DATE
-        path: release-$CURRENT_DATE.zip
+        path: release.zip
