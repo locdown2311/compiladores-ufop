@@ -66,5 +66,5 @@ jobs:
       uses: actions/upload-artifact@v2
       if: success()
       with:
-        name: release-$CURRENT_DATE
+        name: release.zip
         path: release.zip
