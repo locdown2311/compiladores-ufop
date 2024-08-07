@@ -56,9 +56,11 @@ jobs:
     - name: Create Release ZIP
       if: success()
       run: |
-        CURRENT_DATE=$(date +"%d-%m-%Y")
+        cd src/
+        pwd
+        CURRENT_DATE=$(date +"%Y-%m-%d")
         zip -r release-$CURRENT_DATE.zip .
-            
+                
     - name: Upload Release
       uses: actions/upload-artifact@v2
       if: success()
