@@ -11,7 +11,7 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
-    
+          
     - name: Set up JDK 21
       uses: actions/setup-java@v2
       with:
@@ -43,7 +43,7 @@ jobs:
     - name: Run Java Compiler
       id: java_compiler
       run: |
-        output=$(java Compiler ../arquivos_de_teste/data.lan)
+        output=$(java Compiler.java ../arquivos_de_teste/data.lan)
         echo "compiler_output<<EOF" >> $GITHUB_OUTPUT
         echo "$output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
