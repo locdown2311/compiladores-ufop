@@ -45,9 +45,6 @@ jobs:
       run: |
         cd src/
         output=$(java Compiler ../arquivos_de_teste/data.lan)
-        echo "compiler_output<<EOF" >> $GITHUB_OUTPUT
-        echo "$output" >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
         
     - name: Display Compiler Output
       run: |
