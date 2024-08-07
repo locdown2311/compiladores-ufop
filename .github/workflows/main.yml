@@ -39,3 +39,15 @@ jobs:
           make clean
         fi
         make
+        
+    - name: Run Java Compiler
+      id: java_compiler
+      run: |
+        output=$(java Compiler ../arquivos_de_teste/data.lan)
+        echo "compiler_output<<EOF" >> $GITHUB_OUTPUT
+        echo "$output" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        
+    - name: Display Compiler Output
+      run: |
+        echo "${{ steps.java_compiler.outputs.compiler_output }}"
