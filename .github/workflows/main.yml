@@ -53,9 +53,7 @@ jobs:
       run: |
         echo "Compiler Output:"
         echo "${{ steps.java_compiler.outputs.compiler_output }}"
-            - name: Zip Release
-  # You may pin to the exact commit or the version.
-  # uses: TheDoctor0/zip-release@b57d897cb5d60cb78b51a507f63fa184cfe35554
+
     - name: Making a zip
       uses: TheDoctor0/zip-release@0.7.6
       with:
