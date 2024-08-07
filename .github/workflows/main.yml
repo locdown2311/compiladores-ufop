@@ -63,5 +63,5 @@ jobs:
       uses: actions/upload-artifact@v2
       if: success()
       with:
-        name: release-${{ steps.java_compiler.outputs.compiler_output }}-$CURRENT_DATE
+        name: release-$CURRENT_DATE
         path: release-$CURRENT_DATE.zip
