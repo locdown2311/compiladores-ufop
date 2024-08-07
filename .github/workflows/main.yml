@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
@@ -21,8 +21,21 @@ jobs:
     - name: Install Make
       run: sudo apt-get install -y make
       
-    - name: Change directory and run Make
+    - name: Check for .class files
+      id: class_check
       run: |
         cd src/
-        make clean
+        if find . -name "*.class" | read
+        then
+          echo "has_class_files=true" >> $GITHUB_OUTPUT
+        else
+          echo "has_class_files=false" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Clean and build
+      run: |
+        cd src/
+        if ${{ steps.class_check.outputs.has_class_files }}; then
+          make clean
+        fi
         make
