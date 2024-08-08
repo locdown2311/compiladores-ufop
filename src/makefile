@@ -1,13 +1,16 @@
+SOURCES = Lexer.java Compiler.java
+CLASSES = $(SOURCES:.java=.class)
+JFLEX = JFlex.jar
 
-all: Compiler.class
+all: $(CLASSES)
 
-Compiler.class:  Lexer.java
-	javac -cp . Lexer.java
-	javac -cp . Compiler.java
+%.class: %.java
+	javac -cp . $<
 
-Lexer.java:
-	java -jar JFlex.jar Lexer.flex
+Lexer.java: Lexer.flex
+	java -jar $(JFLEX) $<
+
+$(CLASSES): $(SOURCES)
 
 clean:
-	rm -r *.class
-	rm Lexer.java*
+	rm -rf *.class Lexer.java
