@@ -1,5 +1,4 @@
 import java.lang.String;
-import java.util.ArrayList;
 
 %%
 %class Lexer
@@ -50,9 +49,6 @@ Operator = "+" | "-" | "*" | "/" | "%" | "&&" | "||" | "!" | "==" | "!=" | "<" |
     }
 %}
 
-%init{
-
-%init}
 
 %%
 <YYINITIAL>{
@@ -83,6 +79,7 @@ Operator = "+" | "-" | "*" | "/" | "%" | "&&" | "||" | "!" | "==" | "!=" | "<" |
     "::"                    { return  addToken(TK.DOUBLE_COLON, null); }
     ":"                    { return   addToken(TK.COLON, null); }
 
+    
 
     /* Identificadores e tipagem */
     {Identifier}             { return  addToken(TK.IDENTIFIER, yytext()); }
