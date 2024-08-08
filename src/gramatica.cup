@@ -1,0 +1,70 @@
+// Terminais
+terminal ID, INT, FLOAT, CHAR, Bool, Int, Char, Float;
+terminal String, if, else, iterate, read, print, return, new;
+terminal '(', ')', '{', '}', '[', ']', ',', ';', '::', '=', '&&', '<', '==', '!=', '+', '-', '*', '/', '%', '!', '.';
+
+// Não terminais
+non terminal prog, data, decl, func, params, type, btype, cmd, exp, rexp, aexp, mexp, sexp, pexp, lvalue, exps;
+
+// Regras da Gramática
+prog ::= {data} {func};
+
+data ::= data ID '{' {decl} '}';
+
+decl ::= ID '::' type ';';
+
+func ::= ID '(' [params] ')' [':' type (',' type)*] '{' {cmd} '}';
+
+params ::= ID '::' type {',' ID '::' type};
+
+type ::= type '[' ']' | btype;
+
+btype ::= Int | Char | Bool | Float | ID;
+
+cmd ::= '{' {cmd} '}'
+     | if '(' exp ')' cmd
+     | if '(' exp ')' cmd else cmd
+     | iterate '(' exp ')' cmd
+     | read lvalue ';'
+     | print exp ';'
+     | return exp {',' exp} ';'
+     | lvalue = exp ';'
+     | ID '(' [exps] ')' ['<' lvalue {',' lvalue} '>'] ';';
+
+// Expressoes
+exp ::= exp '&&' exp | rexp;
+// Expressoes relacionais
+rexp ::= aexp '<' aexp
+       | rexp '==' aexp
+       | rexp '!=' aexp
+       | aexp;
+// Expressoes aritmeticas
+aexp ::= aexp '+' mexp
+       | aexp '-' mexp
+       | mexp;
+// Expressoes multiplicacão
+mexp ::= mexp '*' sexp
+       | mexp '/' sexp
+       | mexp '%' sexp
+       | sexp;
+// Expressoes simples
+sexp ::= '!' sexp
+       | '-' sexp
+       | true
+       | false
+       | null
+       | INT
+       | FLOAT
+       | CHAR
+       | pexp;
+
+pexp ::= lvalue
+       | '(' exp ')'
+       | new type [ '[' exp ']' ]
+       | ID '(' [exps] ')' '[' exp ']';
+
+lvalue ::= ID
+         | lvalue '[' exp ']'
+         | lvalue '.' ID;
+
+exps ::= exp { ',' exp };
