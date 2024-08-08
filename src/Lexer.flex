@@ -40,16 +40,9 @@ StringLiteral = "\"" ( [^\r\n"\\] | "\\" [nrtb"\\] )* "\""
 Operator = "+" | "-" | "*" | "/" | "%" | "&&" | "||" | "!" | "==" | "!=" | "<" | ">" | "<=" | ">=" | "="
 
 /* Metodos adicionais */
-%{
-
-    private static java.util.ArrayList<Token> tokens;
-
-    public static java.util.ArrayList<Token> getTokens() {
-        return tokens;
-    }
- 
-    private void addToken(TK type, String text) {
-        tokens.add(new Token(yyline + 1, yycolumn + 1, type, text));
+%{ 
+    private Token addToken(TK type, String text) {
+        return new Token(yyline + 1, yycolumn + 1, type, text);
     }
 
     public boolean isZzAtEOF() {
@@ -58,57 +51,57 @@ Operator = "+" | "-" | "*" | "/" | "%" | "&&" | "||" | "!" | "==" | "!=" | "<" |
 %}
 
 %init{
-    tokens = new java.util.ArrayList<>();
+
 %init}
 
 %%
 <YYINITIAL>{
     /* Palavras chave */
-    "if"                      { addToken(TK.IF,null); }
-    "else"                    { addToken(TK.ELSE,null); }
-    "while"                   { addToken(TK.WHILE,null); }
-    "return"                  { addToken(TK.RETURN,null); }
-    "int"                     { addToken(TK.INT,null); }
-    "float"                   { addToken(TK.FLOAT,null); }
-    "char"                    { addToken(TK.CHAR,null); }
-    "boolean"                 { addToken(TK.BOOLEAN,null); }
-    "void"                    { addToken(TK.VOID,null); }
-    "true"                    { addToken(TK.TRUE,null); }
-    "false"                   { addToken(TK.FALSE,null); }
-    "null"                    { addToken(TK.NULL,null); }
+    "if"                      { return  addToken(TK.IF,null); }
+    "else"                    { return  addToken(TK.ELSE,null); }
+    "while"                   { return  addToken(TK.WHILE,null); }
+    "return"                  { return  addToken(TK.RETURN,null); }
+    "int"                     { return  addToken(TK.INT,null); }
+    "float"                   { return  addToken(TK.FLOAT,null); }
+    "char"                    { return  addToken(TK.CHAR,null); }
+    "boolean"                 { return  addToken(TK.BOOLEAN,null); }
+    "void"                    { return  addToken(TK.VOID,null); }
+    "true"                    { return  addToken(TK.TRUE,null); }
+    "false"                   { return  addToken(TK.FALSE,null); }
+    "null"                    { return  addToken(TK.NULL,null); }
 
     /* Separadores */
-    ")"                     { addToken(TK.RPAREN,null); }
-    "("                     { addToken(TK.LPAREN,null); }
-    "{"                     { addToken(TK.LBRACE,null); }
-    "}"                     { addToken(TK.RBRACE,null); }
-    "["                     { addToken(TK.LBRACK,null); }
-    "]"                     { addToken(TK.RBRACK,null); }
-    ";"                     { addToken(TK.SEMICOLON,null); }
-    ","                     { addToken(TK.COMMA,null); }
-    "."                     { addToken(TK.DOT,null); }
-    "::"                    { addToken(TK.DOUBLE_COLON, null); }
-    ":"                    { addToken(TK.COLON, null); }
+    ")"                     { return  addToken(TK.RPAREN,null); }
+    "("                     { return  addToken(TK.LPAREN,null); }
+    "{"                     { return  addToken(TK.LBRACE,null); }
+    "}"                     { return  addToken(TK.RBRACE,null); }
+    "["                     { return  addToken(TK.LBRACK,null); }
+    "]"                     { return  addToken(TK.RBRACK,null); }
+    ";"                     { return  addToken(TK.SEMICOLON,null); }
+    ","                     { return  addToken(TK.COMMA,null); }
+    "."                     { return  addToken(TK.DOT,null); }
+    "::"                    { return  addToken(TK.DOUBLE_COLON, null); }
+    ":"                    { return   addToken(TK.COLON, null); }
 
 
     /* Identificadores e tipagem */
-    {Identifier}             { addToken(TK.IDENTIFIER, yytext()); }
-    {TypeName}               { addToken(TK.TYPE_NAME, yytext()); }
+    {Identifier}             { return  addToken(TK.IDENTIFIER, yytext()); }
+    {TypeName}               { return  addToken(TK.TYPE_NAME, yytext()); }
 
     /* Literais */
-    {IntegerLiteral}         { addToken(TK.INTEGER_LITERAL, yytext()); }
-    {FloatingPointLiteral}   { addToken(TK.FLOATING_POINT_LITERAL, yytext()); }
-    {CharacterLiteral}       { addToken(TK.CHARACTER_LITERAL, yytext()); }
-    {StringLiteral}         { addToken(TK.STRING_LITERAL, yytext()); }
+    {IntegerLiteral}         { return  addToken(TK.INTEGER_LITERAL, yytext()); }
+    {FloatingPointLiteral}   { return  addToken(TK.FLOATING_POINT_LITERAL, yytext()); }
+    {CharacterLiteral}       { return  addToken(TK.CHARACTER_LITERAL, yytext()); }
+    {StringLiteral}         { return  addToken(TK.STRING_LITERAL, yytext()); }
 
     /* Operadores */
-    {Operator}               { addToken(TK.OPERATOR, yytext()); }
+    {Operator}               { return  addToken(TK.OPERATOR, yytext()); }
 
     /* Espaço em branco e comentarios */
     {WhiteSpace}           { /* ignore */ }
     {Comment}               { /* ignore */ }
 
     /* Tratamento de Erros */
-    <<EOF>>            { return new Token(yyline,yycolumn,TK.EOF,null); }
+    <<EOF>>            { return  addToken(TK.EOF,null); }
     [^] { System.err.println("Lexical error: Illegal character '" + yytext() + "' at line " + (yyline+1) + ", column " + (yycolumn+1)); }
 }

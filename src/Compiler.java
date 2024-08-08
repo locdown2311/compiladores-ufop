@@ -22,12 +22,10 @@ public class Compiler {
                 Lexer scanner = null;
                 try {
                     scanner = new Lexer( new java.io.FileReader(argv[i]) );
-                    while ( !scanner.isZzAtEOF() ) scanner.nextToken();
-                    System.out.println("Imprimindo os tokens:");
-                    ArrayList<Token> preenchidos = Lexer.getTokens();
-                    for (Token token : preenchidos) {
-                        System.out.println(token);
-                    }
+                    while ( !scanner.isZzAtEOF() ){
+                        System.out.println(scanner.nextToken());
+                    } 
+    
                 }
                 catch (java.io.FileNotFoundException e) {
                     System.out.println("File not found : \""+argv[i]+"\"");
