@@ -15,7 +15,7 @@ InputCharacter = [^\r\n]
 
 WhiteSpace = {LineTerminator} | [ \t\f]
 
-/* Comentarios */
+/* Comentarios (Melhorar formato de bloco, um bloco de comentario aberto por exemplo) */
 Comment = "{-" [^-] ~"-}" | "--" {InputCharacter}* {LineTerminator}?
 
 /* Identificadores */
