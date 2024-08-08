@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -11,7 +11,7 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
-    
+          
     - name: Set up JDK 21
       uses: actions/setup-java@v2
       with:
@@ -39,3 +39,32 @@ jobs:
           make clean
         fi
         make
+        
+    - name: Run Java Compiler
+      id: java_compiler
+      run: |
+        cd src/
+        output=$(java Compiler ../arquivos_de_teste/data.lan)
+        echo "compiler_output<<EOF" >> $GITHUB_OUTPUT
+        echo "$output" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+    
+    - name: Display Compiler Output
+      run: |
+        echo "Compiler Output:"
+        echo "${{ steps.java_compiler.outputs.compiler_output }}"
+
+    - name: Making a zip
+      uses: TheDoctor0/zip-release@0.7.6
+      with:
+        # Filename for archive
+        filename: release.zip
+        # Base path for archive files
+        path: .
+           
+    - name: Upload Release
+      uses: actions/upload-artifact@v2
+      if: success()
+      with:
+        name: release.zip
+        path: release.zip
