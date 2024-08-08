@@ -1,21 +1,16 @@
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Stack;
 
 public class Compiler {
     private Token t;
     private Lexer lexer;
-    private ArrayList<Token> buffTokens;
-    private Stack<Integer> s;
-    private int pos, rpos, level, nback;
     private boolean eof,debug;
 
 
     
     public static void main(String argv[]) {
         if (argv.length == 0) {
-        System.out.println("Usage : java Lexer <inputfile>");
+        System.out.println("Usage : java Compiler <inputfile>");
         }
         else {
             for (int i = 0; i < argv.length; i++) {
