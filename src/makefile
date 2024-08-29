@@ -1,16 +1,20 @@
-SOURCES = Lexer.java Compiler.java
-CLASSES = $(SOURCES:.java=.class)
-JFLEX = JFlex.jar
+all: Compiler.class
 
-all: $(CLASSES)
 
-%.class: %.java
-	javac -cp . $<
+Compiler.class:  lang/parser/Lexer.java lang/parser/LangParser.java
+	javac -cp .:lang/beaver-rt-0.9.11.jar Compiler.java
 
-Lexer.java: Lexer.flex
-	java -jar $(JFLEX) $<
+lang/parser/LangParser.java:  lang/parser/lang.grammar lang/parser/Lexer.java
+	java -jar tools/beaver-cc-0.9.11.jar  -T -t  lang/parser/lang.grammar
 
-$(CLASSES): $(SOURCES)
+lang/parser/Lexer.java:
+	java -jar tools/JFlex.jar -nobak lang/parser/Lexer.flex
+
+cleanAll:
+	find -name "*.class" -delete
+	rm lang/parser/Lexer.java
+	rm lang/parser/LangParser.java
 
 clean:
-	rm -rf *.class Lexer.java
+	find -name "*.class" -delete
+

@@ -1,4 +1,5 @@
-public class Token {
+package lang.parser;
+public class Token extends beaver.Scanner{
      public TK tag;        // Uma marca para o Token
      public int l, c;      // Coordenadas de Linha e Coluna
      public Object value;  // Um lexema ou o valor denotado pelo lexema
