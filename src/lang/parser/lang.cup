@@ -1,0 +1,128 @@
+package lang.parser;
+import java_cup.runtime.*;
+import java.util.*;
+import java.io.*;
+
+
+/* Terminais */
+terminal INT, CHAR, BOOL, FLOAT, ID, INTLITERAL, FLOATLITERAL, CHARLITERAL;
+terminal TRUE, FALSE, NULL;
+terminal LBRACE, RBRACE, LPAREN, RPAREN, LBRACKET, RBRACKET, DOUBLECOLON, SEMICOLON, COLON, COMMA, LESSTHAN, EQUALS, NOTEQUALS, PLUS, MINUS, MULTIPLY, DIVIDE, MOD, LOGICAL_NOT,LOGICAL_AND, NEW, DOT, DATA, IF, ELSE, WHILE, READ, PRINT, RETURN, ASSIGN, LESSTHANSIGN, GREATERTHANSIGN;
+
+/* Não-terminais */
+non terminal Prog, Def, DataDecl, Decl, Fun, Params, Type, Btype, Cmd, Exp, Lvalue, Exps, Defs, Decls, OptParams, OptReturnTypes, Cmds, OtherParams, MoreReturnTypes, TypeDim, ReturnExps, OptExps, OptLvalues, FurtherExps, MoreLvalues;
+non terminal OtherExps;
+
+precedence left RPAREN;
+precedence left LOGICAL_AND;
+precedence left LESSTHAN;
+precedence left EQUALS, NOTEQUALS;
+precedence right LOGICAL_NOT;
+precedence left MULTIPLY, DIVIDE, MOD;
+precedence left PLUS, MINUS;
+precedence left LOGICAL_AND;
+
+
+/* Produção inicial */
+start with Prog;
+
+Prog     ::= Defs ;
+
+Defs     ::= /* vazio */ 
+           | Def Defs ;
+
+Def      ::= DataDecl 
+           | Fun ;
+
+DataDecl ::= DATA ID LBRACE Decls RBRACE ;
+
+Decls    ::= /* vazio */ 
+           | Decl Decls ;
+
+Decl     ::= ID DOUBLECOLON Type SEMICOLON ;
+
+Fun      ::= ID LPAREN OptParams RPAREN OptReturnTypes LBRACE Cmds RBRACE ;
+
+OptParams ::= /* vazio */ 
+            | Params ;
+
+Params   ::= ID DOUBLECOLON Type OtherParams ;
+
+OtherParams ::= /* vazio */ 
+              | COMMA ID DOUBLECOLON Type OtherParams ;
+
+OptReturnTypes ::= /* vazio */
+                 | COLON Type MoreReturnTypes ;
+
+MoreReturnTypes ::= /* vazio */ 
+                  | COMMA Type MoreReturnTypes ;
+
+Type     ::= TypeDim
+           | Btype ;
+
+TypeDim  ::= Type LBRACKET RBRACKET ;
+
+Btype    ::= INT
+           | CHAR
+           | BOOL
+           | FLOAT
+           | ID ;
+
+Cmds     ::= /* vazio */ 
+           | Cmd Cmds ;
+
+Cmd      ::= LBRACE Cmds RBRACE 
+           | IF LPAREN Exp RPAREN Cmd 
+           | IF LPAREN Exp RPAREN Cmd ELSE Cmd 
+           | WHILE LPAREN Exp RPAREN Cmd 
+           | READ Lvalue SEMICOLON 
+           | PRINT Exp SEMICOLON 
+           | RETURN ReturnExps SEMICOLON 
+           | Lvalue ASSIGN Exp SEMICOLON 
+           | ID ASSIGN Exp SEMICOLON 
+           | ID LPAREN OptExps RPAREN OptLvalues SEMICOLON ;
+
+ReturnExps ::= Exp FurtherExps ;
+
+FurtherExps ::= /* vazio */
+              | COMMA Exp FurtherExps ;
+
+OptExps  ::= /* vazio */ 
+           | Exps ;
+
+OptLvalues ::= /* vazio */
+             | LESSTHANSIGN Lvalue MoreLvalues GREATERTHANSIGN ;
+
+MoreLvalues ::= /* vazio */
+              | COMMA Lvalue MoreLvalues ;
+
+Exps     ::= Exp OtherExps ;
+
+OtherExps ::= /* vazio */
+            | COMMA Exp OtherExps ;
+
+Exp      ::= Exp LOGICAL_AND Exp 
+           | Exp LESSTHAN Exp 
+           | Exp EQUALS Exp 
+           | Exp NOTEQUALS Exp 
+           | Exp PLUS Exp 
+           | Exp MINUS Exp 
+           | Exp MULTIPLY Exp 
+           | Exp DIVIDE Exp 
+           | Exp MOD Exp 
+           | LOGICAL_NOT Exp 
+           | MINUS Exp 
+           | TRUE 
+           | FALSE 
+           | NULL 
+           | INTLITERAL 
+           | FLOATLITERAL 
+           | CHARLITERAL 
+           | Lvalue 
+           | LPAREN Exp RPAREN 
+           | NEW Type LBRACKET Exp RBRACKET 
+           | ID LPAREN OptExps RPAREN LBRACKET Exp RBRACKET ;
+
+Lvalue   ::= ID 
+           | Lvalue LBRACKET Exp RBRACKET 
+           | Lvalue DOT ID ;

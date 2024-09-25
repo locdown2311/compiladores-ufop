@@ -18,3 +18,4 @@ cleanAll:
 clean:
 	find -name "*.class" -delete
 
+ java
