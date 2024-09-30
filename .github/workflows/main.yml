@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - tp-02
 
 jobs:
   build:
@@ -44,7 +44,7 @@ jobs:
       id: java_compiler
       run: |
         cd src/
-        output=$(java Compiler ../arquivos_de_teste/data.lan)
+        output=$(java Demo ../arquivos_de_teste/pessoal.lan)
         echo "compiler_output<<EOF" >> $GITHUB_OUTPUT
         echo "$output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
