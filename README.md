@@ -31,6 +31,21 @@ O grupo não teve sucesso na implementação da interpretação, porém chegou a
 
 ![Figura 1: Representação da AST após a execução do arquivo pessoal.lan]([Captura de tela 2024-09-30 103934.png](https://github.com/locdown2311/compiladores-ufop/blob/tp-02/Captura%20de%20tela%202024-09-30%20103934.png))
 
+
+### 1.6 Exemplo de Código de Execução
+
+Para compilar e executar o analisador, utilizamos os seguintes comandos:
+
+```bash
+# Compilação
+make
+javac -cp .:tools/antlr-4.13.2-complete.jar Demo.java
+
+# Execução
+java -cp .:tools/antlr-4.13.2-complete.jar Demo arquivotexto
+
+```
+
 ## 2. Conclusão
 
 Neste projeto, conseguimos implementar com sucesso um analisador sintático utilizando a ferramenta ANTLR4. A escolha desta ferramenta provou-se acertada devido à sua facilidade de uso na criação do lexer e parser, bem como à abundância de recursos disponíveis online.
