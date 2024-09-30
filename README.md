@@ -29,7 +29,7 @@ O grupo não teve sucesso na implementação da interpretação, porém chegou a
 
 ### 1.5 Representação da Árvore de Sintaxe Abstrata (AST)
 
-![Figura 1: Representação da AST após a execução do arquivo pessoal.lan](Captura de tela 2024-09-30 103934.png)
+![Figura 1: Representação da AST após a execução do arquivo pessoal.lan]([Captura de tela 2024-09-30 103934.png](https://github.com/locdown2311/compiladores-ufop/blob/tp-02/Captura%20de%20tela%202024-09-30%20103934.png))
 
 ## 2. Conclusão
 
