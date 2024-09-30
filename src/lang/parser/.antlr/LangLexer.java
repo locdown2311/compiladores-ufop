@@ -52,7 +52,7 @@ public class LangLexer extends Lexer {
 	private static String[] makeLiteralNames() {
 		return new String[] {
 			null, "'if'", "'else'", "'new'", "'print'", "'while'", "'return'", "'Int'", 
-			"'Float'", "'Char'", "'Boolean'", "'void'", "'true'", "'false'", "'null'", 
+			"'Float'", "'Char'", "'Boolean'", "'Void'", "'true'", "'false'", "'null'", 
 			"'data'", "'read'", "')'", "'('", "'{'", "'}'", "'['", "']'", "';'", 
 			"','", "'.'", "'::'", "':'", "'+'", "'-'", "'*'", "'/'", "'%'", "'&&'", 
 			"'||'", "'!'", "'=='", "'!='", "'<'", "'>'", "'<='", "'>='", "'='"
@@ -189,7 +189,7 @@ public class LangLexer extends Lexer {
 		"\7E\2\2\u0093\u0094\7j\2\2\u0094\u0095\7c\2\2\u0095\u0096\7t\2\2\u0096"+
 		"\24\3\2\2\2\u0097\u0098\7D\2\2\u0098\u0099\7q\2\2\u0099\u009a\7q\2\2\u009a"+
 		"\u009b\7n\2\2\u009b\u009c\7g\2\2\u009c\u009d\7c\2\2\u009d\u009e\7p\2\2"+
-		"\u009e\26\3\2\2\2\u009f\u00a0\7x\2\2\u00a0\u00a1\7q\2\2\u00a1\u00a2\7"+
+		"\u009e\26\3\2\2\2\u009f\u00a0\7X\2\2\u00a0\u00a1\7q\2\2\u00a1\u00a2\7"+
 		"k\2\2\u00a2\u00a3\7f\2\2\u00a3\30\3\2\2\2\u00a4\u00a5\7v\2\2\u00a5\u00a6"+
 		"\7t\2\2\u00a6\u00a7\7w\2\2\u00a7\u00a8\7g\2\2\u00a8\32\3\2\2\2\u00a9\u00aa"+
 		"\7h\2\2\u00aa\u00ab\7c\2\2\u00ab\u00ac\7n\2\2\u00ac\u00ad\7u\2\2\u00ad"+

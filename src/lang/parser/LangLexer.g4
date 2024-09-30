@@ -14,7 +14,7 @@ INT: 'Int';
 FLOAT: 'Float';
 CHAR: 'Char';
 BOOLEAN: 'Boolean';
-VOID: 'void';
+VOID: 'Void';
 TRUE: 'true';
 FALSE: 'false';
 NULL: 'null';
