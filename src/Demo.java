@@ -3,15 +3,16 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.*;
 
-import lang.nodes.visitor.EvalVisitor;
-import lang.parser.*;
-
+import lang.parser.LangLexer;
+import lang.parser.LangParser;
+import lang.nodes.*;
+import lang.nodes.expr.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.HashMap;
 
 public class Demo {
     public static void main(String[] args) throws IOException {
@@ -36,25 +37,10 @@ public class Demo {
 
         // Cria um parser com os tokens
         LangParser parser = new LangParser(tokens);
-        
-        // Inicia a análise sintática a partir da regra prog
-        ParseTree tree = parser.prog();
+        //parser.setBuildParseTree( false ) ;
+        ParseTree tree = parser.prog() ;
+        System.out.println(tree.toStringTree(parser) ) ;
 
-        // Imprime a árvore sintática
-        
-        String stringTree = tree.toStringTree(parser);
-        // Salva a árvore sintática em um arquivo
-        /*
-        try (FileWriter writer = new FileWriter("parseTree.txt")) {
-            writer.write(stringTree);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-         */
-        System.out.println(stringTree);
-
-        EvalVisitor visitor = new EvalVisitor();
-        visitor.visit(tree);
     }
     
 }

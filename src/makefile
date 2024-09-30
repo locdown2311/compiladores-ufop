@@ -1,21 +1,30 @@
-all: Compiler.class
+# Variáveis
+ANTLR_JAR=tools/antlr-4.13.2-complete.jar
+SRC_DIR=lang/parser
+LEXER=LangLexer.g4
+PARSER=LangParser.g4
+JAVA_FILES=$(wildcard $(SRC_DIR)/Lang*.java)
+DEMO_FILE=Demo.java
 
+# Regras padrão
+all: compile
 
-Compiler.class:  lang/parser/Lexer.java lang/parser/LangParser.java
-	javac -cp .:lang/beaver-rt-0.9.11.jar Compiler.java
-
-lang/parser/LangParser.java:  lang/parser/lang.grammar lang/parser/Lexer.java
-	java -jar tools/beaver-cc-0.9.11.jar  -T -t  lang/parser/lang.grammar
-
-lang/parser/Lexer.java:
-	java -jar tools/JFlex.jar -nobak lang/parser/Lexer.flex
-
-cleanAll:
-	find -name "*.class" -delete
-	rm lang/parser/Lexer.java
-	rm lang/parser/LangParser.java
-
+# Remove os arquivos .class antigos
 clean:
-	find -name "*.class" -delete
+	rm -f $(SRC_DIR)/LangParser*.class $(SRC_DIR)/LangLexer*.class
 
- java
+# Compila o analisador léxico
+$(SRC_DIR)/LangLexer.java: $(SRC_DIR)/$(LEXER)
+	java -jar $(ANTLR_JAR) $(SRC_DIR)/$(LEXER)
+	@echo 'Compilado analisador léxico'
+
+# Compila o analisador sintático
+$(SRC_DIR)/LangParser.java: $(SRC_DIR)/$(PARSER) $(SRC_DIR)/LangLexer.java
+	java -jar $(ANTLR_JAR) -visitor -no-listener $(SRC_DIR)/$(PARSER)
+	@echo 'Compilado analisador sintático'
+
+# Compila todos os arquivos Java necessários
+compile: clean $(SRC_DIR)/LangLexer.java $(SRC_DIR)/LangParser.java $(JAVA_FILES) $(DEMO_FILE)
+	javac -cp .:$(ANTLR_JAR) $(SRC_DIR)/Lang*.java $(DEMO_FILE)
+
+.PHONY: all clean compile
