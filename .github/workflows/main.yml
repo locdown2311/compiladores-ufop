@@ -44,7 +44,7 @@ jobs:
       id: java_compiler
       run: |
         cd src/
-        output=$(java Demo ../arquivos_de_teste/pessoal.lan)
+        output=$(java -cp .:tools/antlr-4.13.2-complete.jar Demo ../arquivos_de_teste/pessoal.lan)
         echo "compiler_output<<EOF" >> $GITHUB_OUTPUT
         echo "$output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
