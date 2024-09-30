@@ -61,10 +61,3 @@ jobs:
         filename: release.zip
         # Base path for archive files
         path: .
-           
-    - name: Upload Release
-      uses: actions/upload-artifact@v2
-      if: success()
-      with:
-        name: release.zip
-        path: release.zip
