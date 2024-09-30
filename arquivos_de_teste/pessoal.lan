@@ -1,8 +1,14 @@
- fat ( num :: Int) : Int {
-    if ( num < 1 )
-        return 1;
-    else
-        return num * fat ( num-1 );
-    -- OLAAAAAAAAAA        
-
+main(n :: Int, f :: Char) : Void{
+   n = 2;
+   f = 'a';
+   if (n == 2){
+      print "OK";
+   }else{
+      print "NOT";
+   }
+   y = 2 / 3 + 2 + 1;
+   print "ola";
+}
+teste() : Int{
+   print "ok";
 }
