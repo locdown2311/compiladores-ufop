@@ -3,7 +3,7 @@ package lang.nodes;
 import lang.nodes.dotutils.DotFile;
 import lang.nodes.environment.Env;
 
-public abstract class CNode extends  {
+public abstract class CNode  {
 
      public CNode() {
      }
