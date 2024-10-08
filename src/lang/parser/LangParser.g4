@@ -10,137 +10,239 @@ import lang.nodes.*;
 options { tokenVocab=LangLexer; }
 
 // Regras iniciais
-prog returns [CProg c]: 
-      e+=def+ { 
-          // Inicializa o programa com as definições
-      }
+prog returns [CProg c]:
+      e=defList { $c = new CProg((CFuncDef[])$e.df.toArray());}
       ;
 
 // Regras para definições
-def: data | func;
+defList returns [ArrayList<CFuncDef> df] :
+               d=def  defList {$defList.df.add( $d.d);  }
+               |
+               def    { $df = new ArrayList<CFuncDef>();
+                        $df.add($def.d);};
+
+// Regras para definições
+def returns [CFuncDef d]
+   : data {$d = $data.d; }
+   | func {$d = $func.d; }
+   ;
 
 // Definição de estrutura de dados
-data: 
-      DATA TYPE LBRACE decl* RBRACE {
-          // Cria uma nova definição de estrutura de dados
-          System.out.println("Definindo estrutura de dados: " + $TYPE.text);
-      }
-      ;
+data returns [CFuncDef d]
+   : DATA typeName=TYPE LBRACE decls=decl* RBRACE {
+        
+   }
+   ;
 
 // Declaração de variável em uma estrutura de dados
-decl: ID DOUBLE_COLON type SEMICOLON {
-          // Adiciona a declaração de variável à estrutura
-          System.out.println("Declarando variável: " + $ID.text + " do tipo " + $type.text);
+decl returns [CVarDec decla]:
+      id=ID DOUBLE_COLON t=type SEMICOLON {
+          System.out.println("Declarando variável: " + $id.text + " do tipo " + $t.t);
+          $decla = new CVarDec($id.text, $t.t);
       }
       ;
 
 // Definição de função
-func: ID LPAREN (params)? RPAREN (COLON type (COMMA type)*)? LBRACE (cmd)* RBRACE {
-          // Cria uma nova definição de função
-          System.out.println("Definindo função: " + $ID.text);
-      }
-      ;
+func returns [CFuncDef d]
+   : id=ID LPAREN p=params? RPAREN (COLON retTypes+=type (COMMA retTypes+=type)*)? LBRACE cmds+=cmd* RBRACE {
+          List<CNode> commandList = new ArrayList<>();
+          if ($cmds != null) {
+              commandList.addAll($cmds);
+          }
+          CType[] returnTypes = ($retTypes != null) ? $retTypes.toArray(new CType[0]) : new CType[0];
+          CVarDec[] paramsArray = ($p.paramList != null) ? $p.paramList.toArray(new CVarDec[0]) : new CVarDec[0];
+          
+          $d = new CFuncDef($id.text, paramsArray, returnTypes, new CBlock(commandList.toArray(new CNode[0])));      }
+   ;
 
 // Parâmetros de função
-params: ID DOUBLE_COLON type (COMMA ID DOUBLE_COLON type)* {
-          // Processa parâmetros da função
-          System.out.println("Parâmetros: " + $ID.text + " do tipo " + $type.text);
-      }
-      ;
-
+params returns [ArrayList<CVarDec> paramList] 
+   : { $paramList = new ArrayList<CVarDec>(); }
+     ID DOUBLE_COLON type { $paramList.add(new CVarDec($ID.text, $type.t)); }
+     (COMMA ID DOUBLE_COLON type { $paramList.add(new CVarDec($ID.text, $type.t)); })*
+   ;
 // Tipos
-type: btype (LBRACK RBRACK)?;
-
+type returns [CType t]
+   : btype (LBRACK RBRACK)? {
+         $t = new CType($btype.base);
+     };
 // Tipos básicos
-btype: INT
-     | CHAR
-     | BOOLEAN
-     | FLOAT
-     | VOID
-     | TYPE;
+btype returns [CBaseType base]
+   : INT { $base = CBaseType.INT; }
+   | CHAR { $base = CBaseType.CHAR; }
+   | BOOLEAN { $base = CBaseType.BOOL; }
+   | FLOAT { $base = CBaseType.FLOAT; }
+   | VOID { $base = CBaseType.VOID; }
+   | TYPE { $base = CBaseType.TYPE; }
+   ;
 
 // Comandos
-cmd : block
-   | ifCmd
-   | whileCmd
-   | readCmd
-   | printCmd
-   | returnCmd
-   | assignCmd
+cmd returns [CNode c] : 
+   block { $c = new CBlock($block.rcmds); }
+   | ifCmd { $c = $ifCmd.c; }
+   | iterateCmd { $c = $iterateCmd.c; }
+   | readCmd { $c = $readCmd.c; }
+   | printCmd { $c = $printCmd.c; }
+   | returnCmd { $c = $returnCmd.c; }
+   | assignCmd { $c = $assignCmd.c; }
    | funcCallCmd
    ;
 
-block: LBRACE (cmd)* RBRACE;
-
-ifCmd : 
-   IF LPAREN exp RPAREN cmd (ELSE cmd)? {
-      System.out.println("IF: " + $IF.text + " "+$exp.text +" "+ $ELSE.text+" "+$cmd.text);
+block returns [CNode[] rcmds]: 
+   LBRACE cmds+=cmd* RBRACE {
+      $rcmds = $cmds.toArray(new CNode[$cmds.size()]);
+   }
+   ;
+ifCmd returns [CNode c]: 
+   IF LPAREN e=exp RPAREN thenCmd=cmd (ELSE elseCmd=cmd)? {
+      $c = new CIfthen($e.expr, $thenCmd.c, $ELSE != null ? $elseCmd.c : null);
    }
    ;
 
-whileCmd: WHILE LPAREN exp RPAREN cmd;
-
-readCmd: READ lvalue SEMICOLON;
-
-printCmd: PRINT exp SEMICOLON;
-
-returnCmd: RETURN exp (COMMA exp)* SEMICOLON;
-
-assignCmd: lvalue ATTR exp SEMICOLON;
-
-accessReturn: ID LPAREN (exps)? RPAREN LBRACK exp RBRACK;
-
-funcCallCmd: ID LPAREN (exps)? RPAREN (LESS_THAN lvalue (COMMA lvalue)* GREATER_THAN)? SEMICOLON;
-
-exp : logicalOrExp;
-
-logicalOrExp
-   : logicalAndExp (LOGICAL_OR logicalAndExp)*
+iterateCmd returns [CNode c]: 
+   ITERATE LPAREN e=exp RPAREN body=cmd {
+      $c = new CLoop($e.expr, $body.c);
+   }
+   ;
+readCmd returns [CNode c]: 
+   READ l=lvalue SEMICOLON {
+      $c = new CRead($l.lval);
+   }
+   ;
+printCmd returns [CNode c]: 
+   PRINT e=exp SEMICOLON {
+      $c = new Print($e.expr);
+   }
+   ;
+returnCmd returns [CNode c]: 
+   RETURN e=exp (COMMA es+=exp)* SEMICOLON {
+      List<Exp> exprList = new ArrayList<>();
+      exprList.add($e.expr);
+      
+      if ($es != null) {
+          for (Exp exp : $es) {
+              exprList.add(exp);
+          }
+      }
+      
+      $c = new CRet(exprList.toArray(new Exp[0]));
+   }
+   ;
+assignCmd returns [CNode c]: 
+   l=lvalue ATTR e=exp SEMICOLON {
+      $c = new CAttr($l.lval, $e.expr);
+   }
    ;
 
-logicalAndExp
-   : equalityExp (LOGICAL_AND equalityExp)*
+
+funcCallCmd returns [CNode c]
+   : id=ID 
+     LPAREN args=exps? RPAREN 
+     (LESS_THAN outArgs+=lvalue (COMMA outArgs+=lvalue)* GREATER_THAN)?
+     SEMICOLON {
+
+     }
+   ;
+exp returns [Exp expr]
+   : e=logicalOrExp { $expr = $e.expr; }
    ;
 
-equalityExp
-   : relationalExp ((EQUALS | NOT_EQUALS) relationalExp)*
+// Expressões lógicas OR
+logicalOrExp returns [Exp expr]
+   : e1=logicalAndExp { $expr = $e1.expr; }
+     (LOGICAL_OR e2=logicalAndExp { $expr = new Or($expr, $e2.expr); })*
    ;
 
-relationalExp
-   : additiveExp ((LESS_THAN | GREATER_THAN | LESS_OR_EQUAL | GREATER_OR_EQUAL) additiveExp)*
+logicalAndExp returns [Exp expr]
+   : e1=equalityExp { $expr = $e1.expr; }
+     (LOGICAL_AND e2=equalityExp { $expr = new And($expr, $e2.expr); })*
    ;
 
-additiveExp
-   : multiplicativeExp ((PLUS | MINUS) multiplicativeExp)*
+equalityExp returns [Exp expr]
+   : e1=relationalExp { $expr = $e1.expr; }
+     ((EQUALS | NOT_EQUALS) e2=relationalExp { 
+        if ($EQUALS != null) {
+            $expr = new Eq($expr, $e2.expr);
+        } else {
+            $expr = new Ne($expr, $e2.expr);
+        }
+     })*
    ;
 
-multiplicativeExp
-   : unaryExp ((TIMES | DIVIDE | MOD) unaryExp)*
+relationalExp returns [Exp expr]
+   : e1=additiveExp { $expr = $e1.expr; }
+     ((LESS_THAN | GREATER_THAN | LESS_OR_EQUAL | GREATER_OR_EQUAL) e2=additiveExp { 
+        if ($LESS_THAN != null) {
+            $expr = new Lt($expr, $e2.expr);
+        } else if ($GREATER_THAN != null)  {
+            $expr = new Gt($expr, $e2.expr);
+        } else if ($LESS_OR_EQUAL != null)  {
+            $expr = new Loe($expr, $e2.expr);
+        } else {
+            $expr = new Goe($expr, $e2.expr);
+        }
+     })*
    ;
 
-unaryExp
-   : (LOGICAL_NOT | MINUS) unaryExp
-   | primaryExp
+additiveExp returns [Exp expr]
+   : e1=multiplicativeExp { $expr = $e1.expr; }
+     ((PLUS | MINUS) e2=multiplicativeExp { 
+        if ($PLUS != null) {
+            $expr = new Plus($expr, $e2.expr);
+        } else {
+            $expr = new Minus($expr, $e2.expr);
+        }
+     })*
    ;
 
-primaryExp
-   : TRUE
-   | FALSE
-   | NULL
-   | INTLIT
-   | FLOATLIT
-   | CHARLIT
-   | STRINGLIT
-   | lvalue
-   | LPAREN exp RPAREN
-   | NEW type (LBRACK exp RBRACK)*
-   | accessReturn
+multiplicativeExp returns [Exp expr]
+   : e1=unaryExp { $expr = $e1.expr; }
+     ((TIMES | DIVIDE | MOD) e2=unaryExp { 
+      if ($TIMES != null){
+         $expr = new Times($expr, $e2.expr);
+      }else if ($DIVIDE != null){
+         $expr = new Div($expr, $e2.expr);
+      }
+      else{
+         $expr = new Mod($expr, $e2.expr);
+      }
+     })*
    ;
 
+unaryExp returns [Exp expr]
+   : (LOGICAL_NOT | MINUS) e=unaryExp { 
+        if ($LOGICAL_NOT != null) {
+            $expr = new Not($e.expr);
+        } else {
+            $expr = new Uminus($e.expr);
+        }
+     }
+   | primaryExp { $expr = $primaryExp.expr; }
+   ;
+
+primaryExp returns [Exp expr]
+   : TRUE { $expr = new BoolLit(true); }
+   | FALSE { $expr = new BoolLit(false); }
+   | NULL { $expr = new CNull(); }
+   | il=INTLIT { $expr = new IntLit(Integer.parseInt($il.text)); }
+   | fl=FLOATLIT { $expr = new FloatLit(Float.parseFloat($fl.text)); }
+   | cl=CHARLIT { $expr = new CharLit($cl.text.charAt(0)); }
+   | sl=STRINGLIT { $expr = new StringLit($sl.text); }
+   | lv=lvalue { $expr = $lv.lval; }
+   | LPAREN e=exp RPAREN { $expr = $e.expr; }
+   | NEW t=type (LBRACK e=exp RBRACK)* { 
+      
+     }
+   ;
 // Lvalue
-lvalue: ID
-      | lvalue LBRACK exp RBRACK
-      | lvalue DOT ID;
+lvalue returns [Exp lval]
+   : id=ID { $lval = new Var($id.text); }
+   | lv=lvalue LBRACK e=exp RBRACK { $lval = new CArrayAccess($lv.lval, $e.expr); }
+   | lv=lvalue DOT id=ID { $lval = new CFieldAccess($lv.lval, $id.text); }
+   ;
 
 // Lista de expressões
-exps: exp (COMMA exp)*;
+exps returns [ArrayList<Exp> exprs]
+   : { $exprs = new ArrayList<Exp>(); } 
+     exp { $exprs.add($exp.expr); } (COMMA exp { $exprs.add($exp.expr); })* 
+   ;

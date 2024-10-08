@@ -16,10 +16,10 @@ public class Minus extends BinOp {
           re = getLeft().eval(e);
           rd = getRigth().eval(e);
           if ((re instanceof Integer) && (re instanceof Integer)) {
-               return ((Integer) re + (Integer) rd);
+               return ((Integer) re - (Integer) rd);
           }
           if ((re instanceof Float) && (re instanceof Float)) {
-               return ((Float) re + (Float) rd);
+               return ((Float) re - (Float) rd);
           }
           throw new RuntimeException("operador - : argumentos inválidos");
 

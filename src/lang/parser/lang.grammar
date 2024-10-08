@@ -3,7 +3,7 @@
 %import "lang.nodes.*";
 %import "lang.nodes.expr.*";
 
-%class "LangParser";
+%class "LangParserB";
 
 %embed{:  
 
@@ -11,74 +11,86 @@
 
 %init {:  :} ;
 
-%terminals IF, ELSE, WHILE, RETURN, INT, FLOAT, CHAR, BOOLEAN, VOID, TRUE, FALSE, NULL ;
-%terminals RPAREN, LPAREN, LBRACE, RBRACE, LBRACK, RBRACK, SEMICOLON, COMMA, DOT, DOUBLE_COLON, COLON ;
-%terminals IDENTIFIER, TYPE_NAME, READ, PRINT, NEW, RETURN,MKARR ;
-%terminals INTEGER_LITERAL, FLOATING_POINT_LITERAL, CHARACTER_LITERAL, STRING_LITERAL ;
-%terminals PLUS, MINUS, TIMES, DIV, MOD, LOGICAL_AND, LOGICAL_OR, LOGICAL_NOT ; 
-%terminals EQUALS, NOT_EQUALS, LESS_THAN, GREATER_THAN, LESS_OR_EQUAL, GREATER_OR_EQUAL, ATTR ;
+%terminals  INT, CHAR, BOOL, FLOAT,VOID;
+%terminals  ID, INTEGER_LITERAL, FLOAT_LITERAL, CHAR_LITERAL, STRING_LITERAL, TYPE_NAME;
+%terminals  TRUE, FALSE, NULL;
+%terminals  LBRACE, RBRACE, LPAREN, RPAREN, LBRACKET, RBRACKET; 
+%terminals  DOUBLECOLON, SEMICOLON, COLON, COMMA,DOT;
+%terminals  PLUS, MINUS, TIMES, DIVIDE, MOD, MINUS_UNARY;
+%terminals  LOGICAL_NOT,LOGICAL_AND,LOGICAL_OR; 
+%terminals  EQUALS, NOT_EQUALS, LESS_THAN, GREATER_THAN, LESS_OR_EQUAL, GREATER_OR_EQUAL, ATTR;
+%terminals  NEW, DATA, IF, ELSE, WHILE, READ, PRINT, RETURN; 
 
+%left RBRACKET;
 %left RPAREN;
+%left DOT;
+
 %right LOGICAL_NOT;
-%left TIMES, DIV, MOD;
-%left PLUS, MINUS;
-%left LOGICAL_AND;
+%right MINUS_UNARY;
+
+%left TIMES, DIVIDE, MOD;
+%left PLUS, MINUS, ATTR;
 
 
 %typeof INTEGER_LITERAL = "Integer";
-%typeof FLOATING_POINT_LITERAL = "Double";
-%typeof CHARACTER_LITERAL = "Char";
+%typeof FLOAT_LITERAL = "Double";
+%typeof CHAR_LITERAL = "Char";
 %typeof STRING_LITERAL = "String";
-%typeof IDENTIFIER = "String";
-%typeof Expr = "Exp";
-%typeof valAbstraction = "Exp";
-%typeof CmpExpr = "Exp";
-%typeof LExpr = "Exp";
-%typeof Cmd = "CNode";
-%typeof Els = "CNode";
-%typeof Block = "CNode";
-%typeof VarDec = "CVarDec";
-%typeof TYPE_NAME = "String";
-%typeof CmdList = "CNode";
-%typeof FuncDecl = "CFuncDef";
-
+%typeof ID = "String";
+%typeof def = "CFuncDef";
+%typeof exp = "Exp";
+%typeof params = "CVarDec";
 
 %goal Prog;
 
-Prog = data FuncDecl.s+                                  {:  return new CProg(s);         :}
+Prog = def.s+                                  {:  return new CProg(s);         :}
     ;
-data       = data  IDENTIFIER LBRACE decl* RBRACE
-            |  IDENTIFIER LBRACE decl* RBRACE;
 
-decl       =  IDENTIFIER DOUBLE_COLON type SEMICOLON;
+def        = data | func;
+data       = DATA TYPE_NAME LBRACE decl* RBRACE ;
 
-func       =  IDENTIFIER LPAREN params? RPAREN type? LBRACE cmd* RBRACE;
+decl       =  ID DOUBLECOLON type SEMICOLON;
 
-params     =  IDENTIFIER DOUBLE_COLON type LPAREN COMMA  IDENTIFIER DOUBLE_COLON type RPAREN*;
+func       =  ID.v LPAREN params.d? RPAREN COLON type.t? LBRACE cmd.b* RBRACE {: return new CFuncDef(v,d,t,b);  :}
+            ;
 
-type       = type LBRACK RBRACK
+params     =  ID DOUBLECOLON type LPAREN COMMA  ID DOUBLECOLON type RPAREN*;
+
+type       = type LBRACKET RBRACKET
             | btype;
 
 btype      = INT
             | CHAR
-            | BOOLEAN
+            | BOOL
             | FLOAT
-            | IDENTIFIER;
+            | VOID
+            | TYPE_NAME;
 
-cmd        = LBRACE cmd* RBRACE
-            | IF LPAREN exp RPAREN cmd
-            | IF LPAREN exp RPAREN cmd ELSE cmd
-            | WHILE LPAREN exp RPAREN cmd
-            | READ lvalue SEMICOLON
-            | PRINT exp SEMICOLON
-            | RETURN exp LPAREN COMMA exp RPAREN* SEMICOLON
-            | lvalue ATTR exp SEMICOLON
-            | IDENTIFIER LPAREN exps? RPAREN LPAREN LESS_THAN lvalue LPAREN COMMA lvalue RPAREN* GREATER_THAN RPAREN? SEMICOLON;
+cmd = block
+   | ifCmd
+   | whileCmd
+   | readCmd
+   | printCmd
+   | returnCmd
+   | assignCmd
+   | funcCallCmd
+   ;
+
+block = LBRACE cmd* RBRACE;
+ifCmd = IF LPAREN exp RPAREN cmd ELSE? cmd;
+whileCmd = WHILE LPAREN exp RPAREN cmd;
+readCmd = READ lvalue SEMICOLON;
+printCmd = PRINT exp SEMICOLON;
+returnCmd = RETURN exp COMMA exp* SEMICOLON;
+assignCmd = lvalue ATTR exps? SEMICOLON;
+funcCallCmd = ID LPAREN exps? RPAREN LESS_THAN lvalue COMMA lvalue* GREATER_THAN? SEMICOLON;
+
 
 exp        = exp LOGICAL_AND exp
+            | exp LOGICAL_OR exp
             | rexp;
 
-rexp       = aexp.a LESS_THAN aexp.b {: return new Lt(a,b); :}
+rexp       = aexp.a LESS_THAN aexp.b
             | rexp EQUALS aexp
             | rexp NOT_EQUALS aexp
             | rexp GREATER_THAN aexp
@@ -91,91 +103,28 @@ aexp       = aexp PLUS mexp
             | mexp;
 
 mexp       = mexp TIMES sexp
-            | mexp DIV sexp
+            | mexp DIVIDE sexp
             | mexp MOD sexp
             | sexp;
 
 sexp       =  LOGICAL_NOT sexp
-            | MINUS sexp
+            | MINUS_UNARY sexp
             | TRUE
             | FALSE
             | NULL
-            | INT
-            | FLOAT
-            | CHAR
+            | INTEGER_LITERAL
+            | FLOAT_LITERAL
+            | CHAR_LITERAL
+            | STRING_LITERAL
             | pexp;
 
 pexp       = lvalue
             | LPAREN exp RPAREN
-            | NEW type LBRACK LPAREN LBRACK exp RBRACK RPAREN? 
-            |  IDENTIFIER LPAREN exps? RBRACK;
+            | NEW type LBRACKET LPAREN LBRACKET exp RBRACKET RPAREN? 
+            | ID LPAREN exps? RBRACKET;
 
-lvalue     =  IDENTIFIER
-            | lvalue LBRACK exp RBRACK
-            | lvalue DOT IDENTIFIER;
+lvalue     =  ID
+            | lvalue LBRACKET exp RBRACKET
+            | lvalue DOT ID;
 
 exps       = exp LPAREN COMMA exp RPAREN*;
-
-FuncDecl =  IDENTIFIER.v LPAREN RPAREN COLON TYPE_NAME.t Block.b               {: return new CFuncDef(v,new CVarDec[0],new CType(t),b);  :}
-         |  IDENTIFIER.v LPAREN VarDecList.d RPAREN COLON TYPE_NAME.t Block.b  {: return new CFuncDef(v,d,new CType(t),b);  :}
-         ;
-
-VarDecList = VarDec
-           | VarDecList COMMA VarDec
-           ;
-
-VarDec = TYPE_NAME.t COLON IDENTIFIER.v   {: return new CVarDec(new CType(t),v); :}
-       ;
-
-CmdList = Cmd.c              {: return c;             :}
-        | Cmd.c CmdList.l    {: return new CSeq(c,l); :}
-        ;
-
-Cmd =   IDENTIFIER.v ATTR LExpr.e SEMICOLON                         {: return new CAttr(new Var(v),e);   :}
-      | IF LPAREN LExpr.e RPAREN  Block.b Els.s? {: return new CIfthen(e,b,s); :}
-      | IF LBRACK LExpr.e RBRACK Block.b               {: return new CLoop(e,b);     :}
-      | PRINT LExpr.a SEMICOLON                             {: return new Print(a);       :}
-      | RETURN LExpr.a SEMICOLON                               {: return new CRet(a);        :}
-      | MKARR IDENTIFIER.v Expr.e TYPE_NAME.t SEMICOLON                  {: return new ArrInst(v,e,new CType(t));   :}
-      ;
-
-Els = COLON  Block.b   {: return b; :}
-    ;
-
-Block = LBRACE CmdList.l RBRACE        {: return l; :}
-    ;
-
-
-LExpr = LExpr.a LOGICAL_AND LExpr.b           {: return new And(a,b);  :}
-      | LExpr.a LOGICAL_OR LExpr.b    {: return new Or(a,b); :}
-      | LOGICAL_NOT LExpr.b                   {: return new Not(b);   :}
-      | CmpExpr.e                     {: return e; :}
-      ;
-
-CmpExpr = Expr.a LESS_THAN Expr.b            {: return new Lt(a,b);   :}
-        | Expr.a EQUALS Expr.b            {: return new Eq(a,b);   :}
-        | Expr.e                      {: return e; :}
-        ;
-
-Expr = Expr.a TIMES Expr.b            {: return new Times(a,b); :}
-     | Expr.a DIV   Expr.b            {: return new Div( a, b); :}
-     | Expr.a PLUS  Expr.b            {: return new Plus(a, b); :}
-     | Expr.a MINUS Expr.b            {: return new Minus(a, b);:}
-     | Expr.a MOD Expr.b              {: return new Mod(a, b);  :}
-     | LPAREN Expr.e RPAREN           {: return e;              :}
-     | valAbstraction.v               {: return v;              :}
-     | INTEGER_LITERAL.n                      {: return new IntLit(n);  :}
-     | FLOATING_POINT_LITERAL.f               {: return new FloatLit(f); :}
-     | TRUE                   {: return new BoolLit(true); :}
-     | FALSE                   {: return new BoolLit(false); :}
-     ;
-
-valAbstraction = IDENTIFIER.v LPAREN ExprList.e? RPAREN  {: return new Call(v,e); :}
-               | valAbstraction.a LBRACK Expr.e RBRACK {:  return new Lhs(a,e); :}
-               | IDENTIFIER.v                            {:  return new Var(v);   :}
-               ;
-
-
-ExprList = Expr         //Magica do beaver, converte em arraylist
-         | ExprList COMMA Expr
-         ;

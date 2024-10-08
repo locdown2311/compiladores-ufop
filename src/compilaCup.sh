@@ -7,3 +7,4 @@ mv Parser.java lang/parser;
 mv Sym.java lang/parser;
 echo 'Compilado analisador sintático';
 javac -cp .:lang/parser/java-cup-11b-runtime.jar CompilaCup.java 
+#java -jar tools/java-cup-11b.jar -locations -interface -parser Parser -symbols Sym -xmlactions lang/parser/lang.cup

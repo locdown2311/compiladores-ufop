@@ -2,127 +2,174 @@ package lang.parser;
 import java_cup.runtime.*;
 import java.util.*;
 import java.io.*;
+import lang.nodes.*;
+import lang.nodes.expr.*;
 
 
-/* Terminais */
-terminal INT, CHAR, BOOL, FLOAT, ID, INTLITERAL, FLOATLITERAL, CHARLITERAL;
-terminal TRUE, FALSE, NULL;
-terminal LBRACE, RBRACE, LPAREN, RPAREN, LBRACKET, RBRACKET, DOUBLECOLON, SEMICOLON, COLON, COMMA, LESSTHAN, EQUALS, NOTEQUALS, PLUS, MINUS, MULTIPLY, DIVIDE, MOD, LOGICAL_NOT,LOGICAL_AND, NEW, DOT, DATA, IF, ELSE, WHILE, READ, PRINT, RETURN, ASSIGN, LESSTHANSIGN, GREATERTHANSIGN;
+parser code {:
+    public void syntax_error(Symbol s){
+        System.out.println("Compiler has detected a syntax error at line " + (s.left + 1) 
+            + " column " + (s.right + 1) );
+    }
+    public Parser(Lexer lex, ComplexSymbolFactory sf) {
+        super(lex,sf);
+    }
 
-/* Não-terminais */
-non terminal Prog, Def, DataDecl, Decl, Fun, Params, Type, Btype, Cmd, Exp, Lvalue, Exps, Defs, Decls, OptParams, OptReturnTypes, Cmds, OtherParams, MoreReturnTypes, TypeDim, ReturnExps, OptExps, OptLvalues, FurtherExps, MoreLvalues;
-non terminal OtherExps;
+:};
 
+terminal ID, INT, FLOAT, CHAR, VOID, BOOL;
+terminal INTEGER_LITERAL, FLOAT_LITERAL, CHAR_LITERAL, STRING_LITERAL, TYPE_NAME;
+terminal LPAREN, RPAREN, LBRACE, RBRACE, LBRACKET, RBRACKET, SEMI, COMMA, COLON, DOUBLECOLON, ATTR;
+terminal PLUS, MINUS, TIMES, DIVIDE, MOD;
+terminal LESS_THAN, EQUALS, NOT_EQUALS;
+terminal LOGICAL_AND, LOGICAL_NOT, TRUE, FALSE, NULL, NEW;
+terminal IF, ELSE, ITERATE, READ, PRINT, RETURN;
+terminal MINUS_UNARY, DOT;
+terminal DATA;
+
+// Declaração dos não-terminais
+nonterminal prog, def_list, def, data, decl, func, params, type, btype, cmd, exp;
+nonterminal lvalue, exps, decl_list, opt_params, opt_type_list, cmd_list, type_list, exp_list, opt_exps; 
+nonterminal opt_lvalue_list, lvalue_list, new_dimensions, dimension_list,more_dimensions;
+
+precedence left RBRACKET;
+precedence left DOT;
 precedence left RPAREN;
-precedence left LOGICAL_AND;
-precedence left LESSTHAN;
-precedence left EQUALS, NOTEQUALS;
+
 precedence right LOGICAL_NOT;
-precedence left MULTIPLY, DIVIDE, MOD;
-precedence left PLUS, MINUS;
-precedence left LOGICAL_AND;
+precedence right MINUS_UNARY;
+
+precedence left TIMES, DIVIDE, MOD;
+precedence left PLUS, MINUS, ATTR;
+
+precedence nonassoc LESS_THAN;
+precedence nonassoc EQUALS, NOT_EQUALS;
+precedence nonassoc LOGICAL_NOT;
+precedence nonassoc LOGICAL_AND;
 
 
-/* Produção inicial */
-start with Prog;
+start with prog;
 
-Prog     ::= Defs ;
+prog ::= def_list;
 
-Defs     ::= /* vazio */ 
-           | Def Defs ;
+def_list ::= def
+           | def_list def
+           ;
 
-Def      ::= DataDecl 
-           | Fun ;
+def ::= data
+      | func
+      ;
 
-DataDecl ::= DATA ID LBRACE Decls RBRACE ;
+data ::= DATA ID LBRACE decl_list RBRACE;
 
-Decls    ::= /* vazio */ 
-           | Decl Decls ;
+decl_list ::= decl
+            | decl_list decl
+            ;
 
-Decl     ::= ID DOUBLECOLON Type SEMICOLON ;
+decl ::= ID DOUBLECOLON type SEMI;
 
-Fun      ::= ID LPAREN OptParams RPAREN OptReturnTypes LBRACE Cmds RBRACE ;
+func ::= ID LPAREN opt_params RPAREN opt_type_list LBRACE cmd_list RBRACE;
 
-OptParams ::= /* vazio */ 
-            | Params ;
+opt_params ::= 
+             | params 
+             ;
 
-Params   ::= ID DOUBLECOLON Type OtherParams ;
+params ::= ID DOUBLECOLON type 
+         | params COMMA ID DOUBLECOLON type
+         ;
 
-OtherParams ::= /* vazio */ 
-              | COMMA ID DOUBLECOLON Type OtherParams ;
+opt_type_list ::=
+              | COLON type_list
+              ;
 
-OptReturnTypes ::= /* vazio */
-                 | COLON Type MoreReturnTypes ;
+type_list ::= type
+            | type_list COMMA type
+            ;
 
-MoreReturnTypes ::= /* vazio */ 
-                  | COMMA Type MoreReturnTypes ;
+type ::= btype dimension_list;
 
-Type     ::= TypeDim
-           | Btype ;
 
-TypeDim  ::= Type LBRACKET RBRACKET ;
+btype ::= INT
+        | CHAR
+        | BOOL
+        | FLOAT
+        | VOID
+        | TYPE_NAME
+        ;
 
-Btype    ::= INT
-           | CHAR
-           | BOOL
-           | FLOAT
-           | ID ;
+cmd_list ::= 
+           | cmd_list cmd
+           ;
 
-Cmds     ::= /* vazio */ 
-           | Cmd Cmds ;
+cmd ::= LBRACE cmd_list RBRACE
+      | IF LPAREN exp RPAREN cmd
+      | IF LPAREN exp RPAREN cmd ELSE cmd
+      | ITERATE LPAREN exp RPAREN cmd
+      | READ lvalue SEMI
+      | PRINT exp SEMI
+      | RETURN exp_list SEMI
+      | lvalue ATTR exp SEMI
+      | ID ATTR exp SEMI
+      | ID LPAREN opt_exps RPAREN opt_lvalue_list SEMI
+      ;
 
-Cmd      ::= LBRACE Cmds RBRACE 
-           | IF LPAREN Exp RPAREN Cmd 
-           | IF LPAREN Exp RPAREN Cmd ELSE Cmd 
-           | WHILE LPAREN Exp RPAREN Cmd 
-           | READ Lvalue SEMICOLON 
-           | PRINT Exp SEMICOLON 
-           | RETURN ReturnExps SEMICOLON 
-           | Lvalue ASSIGN Exp SEMICOLON 
-           | ID ASSIGN Exp SEMICOLON 
-           | ID LPAREN OptExps RPAREN OptLvalues SEMICOLON ;
+opt_exps ::= 
+           | exps
+           ;
 
-ReturnExps ::= Exp FurtherExps ;
+opt_lvalue_list ::= 
+                  | LBRACE lvalue_list RBRACE
+                  ;
 
-FurtherExps ::= /* vazio */
-              | COMMA Exp FurtherExps ;
+lvalue_list ::= lvalue
+              | lvalue_list COMMA lvalue
+              ;
 
-OptExps  ::= /* vazio */ 
-           | Exps ;
+exp_list ::= exp
+           | exp_list COMMA exp
+           ;
 
-OptLvalues ::= /* vazio */
-             | LESSTHANSIGN Lvalue MoreLvalues GREATERTHANSIGN ;
+exp ::= exp LOGICAL_AND exp
+      | exp LESS_THAN exp
+      | exp EQUALS exp
+      | exp NOT_EQUALS exp
+      | exp PLUS exp
+      | exp MINUS exp
+      | exp TIMES exp
+      | exp DIVIDE exp
+      | exp MOD exp
+      | LOGICAL_NOT exp
+      | MINUS_UNARY exp
+      | TRUE
+      | FALSE
+      | NULL
+      | INTEGER_LITERAL
+      | FLOAT_LITERAL
+      | CHAR_LITERAL
+      | STRING_LITERAL
+      | lvalue
+      | LPAREN exp RPAREN
+      | NEW type new_dimensions
+      | ID LPAREN opt_exps RPAREN LBRACKET exp RBRACKET
+      ;
 
-MoreLvalues ::= /* vazio */
-              | COMMA Lvalue MoreLvalues ;
 
-Exps     ::= Exp OtherExps ;
+dimension_list ::=
+                | dimension_list LBRACKET RBRACKET
+                ;
 
-OtherExps ::= /* vazio */
-            | COMMA Exp OtherExps ;
+new_dimensions ::= LBRACKET exp RBRACKET more_dimensions;
 
-Exp      ::= Exp LOGICAL_AND Exp 
-           | Exp LESSTHAN Exp 
-           | Exp EQUALS Exp 
-           | Exp NOTEQUALS Exp 
-           | Exp PLUS Exp 
-           | Exp MINUS Exp 
-           | Exp MULTIPLY Exp 
-           | Exp DIVIDE Exp 
-           | Exp MOD Exp 
-           | LOGICAL_NOT Exp 
-           | MINUS Exp 
-           | TRUE 
-           | FALSE 
-           | NULL 
-           | INTLITERAL 
-           | FLOATLITERAL 
-           | CHARLITERAL 
-           | Lvalue 
-           | LPAREN Exp RPAREN 
-           | NEW Type LBRACKET Exp RBRACKET 
-           | ID LPAREN OptExps RPAREN LBRACKET Exp RBRACKET ;
+more_dimensions ::= 
+                  | more_dimensions LBRACKET exp RBRACKET
+                  ;
 
-Lvalue   ::= ID 
-           | Lvalue LBRACKET Exp RBRACKET 
-           | Lvalue DOT ID ;
+
+lvalue ::= ID
+         | lvalue LBRACKET exp RBRACKET
+         | lvalue DOT ID
+         ;
+
+exps ::= exp
+       | exps COMMA exp
+       ;

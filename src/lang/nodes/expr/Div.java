@@ -11,7 +11,16 @@ public class Div extends BinOp {
 
       }
       public Object eval(Env e){
-           return  ((Integer)getLeft().eval(e)) / ((Integer)getRigth().eval(e));
+          Object re,rd;
+          re = getLeft().eval(e);
+          rd = getRigth().eval(e);
+          if ((re instanceof Integer) && (re instanceof Integer)) {
+              return ((Integer) re / (Integer) rd);
+          }
+          if ((re instanceof Float) && (re instanceof Float)) {
+              return ((Float) re / (Float) rd);
+          }
+          throw new RuntimeException("operador / : argumentos inválidos");
       }
 
       public int toDot(DotFile d){

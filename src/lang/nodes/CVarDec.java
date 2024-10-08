@@ -9,10 +9,10 @@ public class CVarDec extends CNode {
       private CType t;
       private String id;
 
-      public CVarDec(CType t, String i){
+      public CVarDec(String i,CType t){
           super();
-          this.t = t;
           this.id = i;
+          this.t = t;
       }
 
       public String getID(){ return id;}

@@ -60,11 +60,11 @@ StringLiteral = "\"" ( [^\r\n"\\] | "\\" [nrtb"\\] )* "\""
     "else"                    { return  new Symbol(Terminals.ELSE,yyline + 1, yycolumn + 1, yylength(),yytext()); }
     "while"                   { return  new Symbol(Terminals.WHILE,yyline + 1, yycolumn + 1, yylength(),yytext()); }
     "return"                  { return  new Symbol(Terminals.RETURN,yyline + 1, yycolumn + 1, yylength(),yytext()); }
-    "int"                     { return  new Symbol(Terminals.INT,yyline + 1, yycolumn + 1, yylength(),yytext()); }
-    "float"                   { return  new Symbol(Terminals.FLOAT,yyline + 1, yycolumn + 1, yylength(),yytext()); }
-    "char"                    { return  new Symbol(Terminals.CHAR,yyline + 1, yycolumn + 1, yylength(),yytext()); }
-    "boolean"                 { return  new Symbol(Terminals.BOOLEAN,yyline + 1, yycolumn + 1, yylength(),yytext()); }
-    "void"                    { return  new Symbol(Terminals.VOID,yyline + 1, yycolumn + 1, yylength(),yytext()); }
+    "Int"                     { return  new Symbol(Terminals.INT,yyline + 1, yycolumn + 1, yylength(),yytext()); }
+    "Float"                   { return  new Symbol(Terminals.FLOAT,yyline + 1, yycolumn + 1, yylength(),yytext()); }
+    "Char"                    { return  new Symbol(Terminals.CHAR,yyline + 1, yycolumn + 1, yylength(),yytext()); }
+    "Bool"                    { return  new Symbol(Terminals.BOOL,yyline + 1, yycolumn + 1, yylength(),yytext()); }
+    "Void"                    { return  new Symbol(Terminals.VOID,yyline + 1, yycolumn + 1, yylength(),yytext()); }
     "true"                    { return  new Symbol(Terminals.TRUE,yyline + 1, yycolumn + 1, yylength(),yytext()); }
     "false"                   { return  new Symbol(Terminals.FALSE,yyline + 1, yycolumn + 1, yylength(),yytext()); }
     "null"                    { return  new Symbol(Terminals.NULL,yyline + 1, yycolumn + 1, yylength(),yytext()); }
@@ -78,22 +78,22 @@ StringLiteral = "\"" ( [^\r\n"\\] | "\\" [nrtb"\\] )* "\""
     "("                     { return  new Symbol(Terminals.LPAREN,yyline + 1, yycolumn + 1, yylength(),yytext()); }
     "{"                     { return  new Symbol(Terminals.LBRACE,yyline + 1, yycolumn + 1, yylength(),yytext()); }
     "}"                     { return  new Symbol(Terminals.RBRACE,yyline + 1, yycolumn + 1, yylength(),yytext()); }
-    "["                     { return  new Symbol(Terminals.LBRACK,yyline + 1, yycolumn + 1, yylength(),yytext()); }
-    "]"                     { return  new Symbol(Terminals.RBRACK,yyline + 1, yycolumn + 1, yylength(),yytext()); }
+    "["                     { return  new Symbol(Terminals.LBRACKET,yyline + 1, yycolumn + 1, yylength(),yytext()); }
+    "]"                     { return  new Symbol(Terminals.RBRACKET,yyline + 1, yycolumn + 1, yylength(),yytext()); }
     ";"                     { return  new Symbol(Terminals.SEMICOLON,yyline + 1, yycolumn + 1, yylength(),yytext()); }
     ","                     { return  new Symbol(Terminals.COMMA,yyline + 1, yycolumn + 1, yylength(),yytext()); }
     "."                     { return  new Symbol(Terminals.DOT,yyline + 1, yycolumn + 1, yylength(),yytext()); }
-    "::"                    { return  new Symbol(Terminals.DOUBLE_COLON, yyline + 1, yycolumn + 1, yylength(),yytext()); }
+    "::"                    { return  new Symbol(Terminals.DOUBLECOLON, yyline + 1, yycolumn + 1, yylength(),yytext()); }
     ":"                    { return   new Symbol(Terminals.COLON, yyline + 1, yycolumn + 1, yylength(),yytext()); }
 
     /* Identificadores e tipagem */
-    {Identifier}             { return  new Symbol(Terminals.IDENTIFIER, yyline + 1, yycolumn + 1, yylength(),yytext()); }
+    {Identifier}             { return  new Symbol(Terminals.ID, yyline + 1, yycolumn + 1, yylength(),yytext()); }
     {TypeName}               { return  new Symbol(Terminals.TYPE_NAME, yyline + 1, yycolumn + 1, yylength(),yytext()); }
 
     /* Literais */
     {IntegerLiteral}         { return  new Symbol(Terminals.INTEGER_LITERAL, yyline + 1, yycolumn + 1, yylength(),yytext()); }
-    {FloatingPointLiteral}   { return  new Symbol(Terminals.FLOATING_POINT_LITERAL, yyline + 1, yycolumn + 1, yylength(),yytext()); }
-    {CharacterLiteral}       { return  new Symbol(Terminals.CHARACTER_LITERAL, yyline + 1, yycolumn + 1, yylength(),yytext()); }
+    {FloatingPointLiteral}   { return  new Symbol(Terminals.FLOAT_LITERAL, yyline + 1, yycolumn + 1, yylength(),yytext()); }
+    {CharacterLiteral}       { return  new Symbol(Terminals.CHAR_LITERAL, yyline + 1, yycolumn + 1, yylength(),yytext()); }
     {StringLiteral}         { return  new Symbol(Terminals.STRING_LITERAL, yyline + 1, yycolumn + 1, yylength(),yytext()); }
 
     /* Operadores */

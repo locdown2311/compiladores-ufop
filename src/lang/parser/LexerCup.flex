@@ -3,14 +3,17 @@ import java.lang.String;
 import java_cup.runtime.*;
 
 %%
-%class Lexer
+%class LexerCup
 %public
 %unicode
 %line
 %column
+%cupsym Sym
 %cup
 
-
+%eofval{
+	return symbol(Sym.EOF, "end-of-file");
+%eofval}
 
 LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
@@ -55,68 +58,68 @@ StringLiteral = "\"" ( [^\r\n"\\] | "\\" [nrtb"\\] )* "\""
 %%
 <YYINITIAL>{
     /* Palavras chave */
-    "if"                      { return  new Symbol(Sym.IF,yytext()); }
-    "else"                    { return  new Symbol(Sym.ELSE,yytext()); }
-    "while"                   { return  new Symbol(Sym.WHILE,yytext()); }
-    "return"                  { return  new Symbol(Sym.RETURN,yytext()); }
-    "int"                     { return  new Symbol(Sym.INT,yytext()); }
-    "float"                   { return  new Symbol(Sym.FLOAT,yytext()); }
-    "char"                    { return  new Symbol(Sym.CHAR,yytext()); }
-    "boolean"                 { return  new Symbol(Sym.BOOL,yytext()); }
-    "void"                    { return  new Symbol(Sym.VOID,yytext()); }
-    "true"                    { return  new Symbol(Sym.TRUE,yytext()); }
-    "false"                   { return  new Symbol(Sym.FALSE,yytext()); }
-    "null"                    { return  new Symbol(Sym.NULL,yytext()); }
-    "new"                    { return   new Symbol(Sym.NEW, yytext()); }
+    "if"                      { return  symbol(Sym.IF,yytext()); }
+    "else"                    { return  symbol(Sym.ELSE,yytext()); }
+    "while"                   { return  symbol(Sym.WHILE,yytext()); }
+    "return"                  { return  symbol(Sym.RETURN,yytext()); }
+    "Int"                     { return  symbol(Sym.INT,yytext()); }
+    "Float"                   { return  symbol(Sym.FLOAT,yytext()); }
+    "Char"                    { return  symbol(Sym.CHAR,yytext()); }
+    "Bool"                 { return  symbol(Sym.BOOL,yytext()); }
+    "Void"                    { return  symbol(Sym.VOID,yytext()); }
+    "true"                    { return  symbol(Sym.TRUE,yytext()); }
+    "false"                   { return  symbol(Sym.FALSE,yytext()); }
+    "null"                    { return  symbol(Sym.NULL,yytext()); }
+    "new"                    { return   symbol(Sym.NEW, yytext()); }
+    "data"                    { return   symbol(Sym.DATA, yytext()); }
+    "read"                    { return   symbol(Sym.READ, yytext()); }
+    "print"                    { return   symbol(Sym.PRINT, yytext()); }
 
 
     /* Separadores */
-    ")"                     { return  new Symbol(Sym.RPAREN,yytext()); }
-    "("                     { return  new Symbol(Sym.LPAREN,yytext()); }
-    "{"                     { return  new Symbol(Sym.LBRACE,yytext()); }
-    "}"                     { return  new Symbol(Sym.RBRACE,yytext()); }
-    "["                     { return  new Symbol(Sym.LBRACKET,yytext()); }
-    "]"                     { return  new Symbol(Sym.RBRACKET,yytext()); }
-    ";"                     { return  new Symbol(Sym.SEMICOLON,yytext()); }
-    ","                     { return  new Symbol(Sym.COMMA,yytext()); }
-    "."                     { return  new Symbol(Sym.DOT,yytext()); }
-    "::"                    { return  new Symbol(Sym.DOUBLECOLON, yytext()); }
-    ":"                    { return   new Symbol(Sym.COLON, yytext()); }
+    ")"                     { return  symbol(Sym.RPAREN,yytext()); }
+    "("                     { return  symbol(Sym.LPAREN,yytext()); }
+    "{"                     { return  symbol(Sym.LBRACE,yytext()); }
+    "}"                     { return  symbol(Sym.RBRACE,yytext()); }
+    "["                     { return  symbol(Sym.LBRACKET,yytext()); }
+    "]"                     { return  symbol(Sym.RBRACKET,yytext()); }
+    ";"                     { return  symbol(Sym.SEMICOLON,yytext()); }
+    ","                     { return  symbol(Sym.COMMA,yytext()); }
+    "."                     { return  symbol(Sym.DOT,yytext()); }
+    "::"                    { return  symbol(Sym.DOUBLECOLON, yytext()); }
+    ":"                    { return   symbol(Sym.COLON, yytext()); }
 
     /* Identificadores e tipagem */
-    {Identifier}             { return  new Symbol(Sym.ID, yytext()); }
-    {TypeName}               { return  new Symbol(Sym.TYPE_NAME, yytext()); }
+    {Identifier}             { return  symbol(Sym.ID, yytext()); }
+    {TypeName}               { return  symbol(Sym.TYPE_NAME, yytext()); }
 
     /* Literais */
-    {IntegerLiteral}         { return  new Symbol(Sym.INTEGER_LITERAL, yytext()); }
-    {FloatingPointLiteral}   { return  new Symbol(Sym.FLOAT_LITERAL, yytext()); }
-    {CharacterLiteral}       { return  new Symbol(Sym.CHAR_LITERAL, yytext()); }
-    {StringLiteral}         { return  new Symbol(Sym.STRING_LITERAL, yytext()); }
+    {IntegerLiteral}         { return  symbol(Sym.INTEGER_LITERAL, yytext()); }
+    {FloatingPointLiteral}   { return  symbol(Sym.FLOAT_LITERAL, yytext()); }
+    {CharacterLiteral}       { return  symbol(Sym.CHAR_LITERAL, yytext()); }
+    {StringLiteral}         { return  symbol(Sym.STRING_LITERAL, yytext()); }
 
     /* Operadores */
 
-    "+"                    { return new Symbol(Sym.PLUS,  yytext()); }
-    "-"                    { return new Symbol(Sym.MINUS,  yytext()); }
-    "*"                    { return new Symbol(Sym.TIMES,  yytext()); }
-    "/"                    { return new Symbol(Sym.DIVIDE,  yytext()); }
-    "%"                    { return new Symbol(Sym.MOD,  yytext()); }
-    "&&"                   { return new Symbol(Sym.LOGICAL_AND,  yytext()); }
-    "||"                   { return new Symbol(Sym.LOGICAL_OR,  yytext()); }
-    "!"                    { return new Symbol(Sym.LOGICAL_NOT,  yytext()); }
-    "=="                   { return new Symbol(Sym.EQUALS,  yytext()); }
-    "!="                   { return new Symbol(Sym.NOT_EQUALS,  yytext()); }
-    "<"                    { return new Symbol(Sym.LESS_THAN,  yytext()); }
-    ">"                    { return new Symbol(Sym.GREATER_THAN,  yytext()); }
-    "<="                   { return new Symbol(Sym.LESS_OR_EQUAL,  yytext()); }
-    ">="                   { return new Symbol(Sym.GREATER_OR_EQUAL,  yytext()); }
-    "="                    { return new Symbol(Sym.ATTR,  yytext()); }
+    "+"                    { return symbol(Sym.PLUS,  yytext()); }
+    "-"                    { return symbol(Sym.MINUS,  yytext()); }
+    "*"                    { return symbol(Sym.TIMES,  yytext()); }
+    "/"                    { return symbol(Sym.DIVIDE,  yytext()); }
+    "%"                    { return symbol(Sym.MOD,  yytext()); }
+    "&&"                   { return symbol(Sym.LOGICAL_AND,  yytext()); }
+    "||"                   { return symbol(Sym.LOGICAL_OR,  yytext()); }
+    "!"                    { return symbol(Sym.LOGICAL_NOT,  yytext()); }
+    "=="                   { return symbol(Sym.EQUALS,  yytext()); }
+    "!="                   { return symbol(Sym.NOT_EQUALS,  yytext()); }
+    "<"                    { return symbol(Sym.LESS_THAN,  yytext()); }
+    ">"                    { return symbol(Sym.GREATER_THAN,  yytext()); }
+    "<="                   { return symbol(Sym.LESS_OR_EQUAL,  yytext()); }
+    ">="                   { return symbol(Sym.GREATER_OR_EQUAL,  yytext()); }
+    "="                    { return symbol(Sym.ATTR,  yytext()); }
     /* Espaço em branco e comentarios */
     {WhiteSpace}           { /* ignore */ }
     {Comment}               { /* ignore */ }
     "{-"            { yybegin(COMMENT);         }
-
-    /* Tratamento de Erros */
-    <<EOF>>            { return  new Symbol(Sym.EOF,null); }
 }
 <COMMENT>{
    "-}"     { yybegin(YYINITIAL); }

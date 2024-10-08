@@ -8,7 +8,7 @@ IF: 'if';
 ELSE: 'else';
 NEW: 'new';
 PRINT: 'print';
-WHILE: 'while';
+ITERATE: 'iterate';
 RETURN: 'return';
 INT: 'Int';
 FLOAT: 'Float';

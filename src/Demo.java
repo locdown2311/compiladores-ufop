@@ -1,46 +1,60 @@
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.*;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import lang.parser.LangLexer;
 import lang.parser.LangParser;
-import lang.nodes.*;
-import lang.nodes.expr.*;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashMap;
 
 public class Demo {
-    public static void main(String[] args) throws IOException {
-        // Certifique-se de que o argumento do main seja o caminho do arquivo de entrada
-        String inputFile = args.length > 0 ? args[0] : "input.txt";
-        
-        // Cria um lexer que lê do arquivo de entrada
-        LangLexer lexer = new LangLexer(CharStreams.fromFileName(inputFile));
-        
-        // Cria um fluxo de tokens a partir do lexer
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        tokens.fill();  // Alimenta todos os tokens
 
-        // Itera sobre todos os tokens e imprime-os
+    public static void runLexer(String inputFile) throws IOException {
+        LangLexer lexer = new LangLexer(CharStreams.fromFileName(inputFile));
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        tokens.fill();
         for (Token token : tokens.getTokens()) {
             String symbolicName = LangLexer.VOCABULARY.getSymbolicName(token.getType());
-            String literalName = LangLexer.VOCABULARY.getLiteralName(token.getType());
-            String tokenName = symbolicName == null ? literalName : symbolicName;
+            String tokenName = symbolicName != null ? symbolicName : token.getText();
             System.out.printf("(%d,%d), %s -> %s\n",
-            token.getLine(), token.getCharPositionInLine(), tokenName, token.getText());
+                    token.getLine(), token.getCharPositionInLine(), tokenName, token.getText());
+        }
+    }
+
+    public static void runParser(String inputFile) throws IOException {
+        LangLexer lexer = new LangLexer(CharStreams.fromFileName(inputFile));
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        tokens.fill();
+        LangParser parser = new LangParser(tokens);
+        ParseTree tree = parser.prog();
+        System.out.println(tree.toStringTree(parser));
+    }
+
+    public static void runInterpreter(String inputFile) {
+        // Implement your interpreter logic here
+    }
+
+    public static void main(String[] args) throws IOException {
+        if (args.length < 1) {
+            System.err.println("Use: Demo <arquivo>");
+            System.exit(1);
         }
 
-        // Cria um parser com os tokens
-        LangParser parser = new LangParser(tokens);
-        //parser.setBuildParseTree( false ) ;
-        ParseTree tree = parser.prog() ;
-        System.out.println(tree.toStringTree(parser) ) ;
-
+        String option = args[args.length - 1];
+        switch (option) {
+            case "-lex":
+                runLexer(args[args.length - 2]);
+                break;
+            case "-p":
+                runParser(args[args.length - 2]);
+                break;
+            case "-lpi":
+                runInterpreter(args[args.length - 2]);
+                break;
+            default:
+                System.err.println("Opção invalida");
+                System.exit(1);
+        }
     }
-    
 }

@@ -5,19 +5,19 @@ import lang.nodes.environment.Env;
 
 public class CType extends CNode {
 
-      private String type;
+      private CBaseType type;
 
-      public CType(String tyName){
+      public CType(CBaseType tyName){
           super();
-          type = tyName;
+          this.type = tyName;
       }
 
-      public String getTyname(){ return type;}
+      public String getTyname(){ return type.name();}
 
       public void interp(Env e){}
 
       public int toDot(DotFile d){
-         int root = d.addNode(type);
+         int root = d.addNode(type.name());
          return root;
       }
 }

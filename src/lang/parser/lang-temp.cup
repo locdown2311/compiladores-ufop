@@ -6,7 +6,7 @@ import java.io.*;
 // Terminais
 terminal DATA, IF, ELSE, WHILE, READ, PRINT, RETURN, TRUE, FALSE, NULL, NEW;
 terminal INT, FLOAT, CHAR, ID;
-terminal String Int, Char, Bool, Float;
+terminal String, Int, Char, Bool, Float;
 terminal LPAREN, RPAREN, LCHAV, RCHAV, LCOLC, RCOLC, SEMICOLON, EQUAL,COMMA, DOUBLE_COLON, DOT, LESS_THAN, MORE_THAN;
 terminal LOGICAL_AND, LOGICAL_OR, LOGICAL_EQ, LOGICAL_NE, PLUS, MINUS, TIMES, DIVIDE, MOD, LOGICAL_NOT;
 
