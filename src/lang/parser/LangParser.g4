@@ -47,19 +47,7 @@ func
     id = ID LPAREN p = params? RPAREN (
         COLON retTypes += type (COMMA retTypes += type)*
     )? LBRACE cmds += cmd* RBRACE {
-        // Cria a lista de parâmetros
-        ArrayList<CVarDec> paramList = ($p.text != null) ? $p.paramList : new ArrayList<CVarDec>();
-        
-        // Cria a lista de tipos de retorno
-        ArrayList<CType> returnTypes = new ArrayList<>();
-        if ($retTypes != null) {
-            for (CType retType : $retTypes) {
-                returnTypes.add(retType);
-            }
-        }
 
-        // Cria o objeto CFuncDef
-        $d = new CFuncDef($id.text, paramList.toArray(new CVarDec[0]), returnTypes.toArray(new CType[0]), $cmds);
     };
 // Parâmetros de função
 params
@@ -145,6 +133,7 @@ funcCallCmd
     )? SEMICOLON {
         
     };
+
 exp
 	returns[Exp expr]: e = logicalOrExp { $expr = $e.expr; };
 

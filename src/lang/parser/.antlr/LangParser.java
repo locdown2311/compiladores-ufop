@@ -477,19 +477,7 @@ public class LangParser extends Parser {
 			setState(117);
 			match(RBRACE);
 
-			        // Cria a lista de parâmetros
-			        ArrayList<CVarDec> paramList = ((((FuncContext)_localctx).p!=null?_input.getText(((FuncContext)_localctx).p.start,((FuncContext)_localctx).p.stop):null) != null) ? ((FuncContext)_localctx).p.paramList : new ArrayList<CVarDec>();
-			        
-			        // Cria a lista de tipos de retorno
-			        ArrayList<CType> returnTypes = new ArrayList<>();
-			        if (((FuncContext)_localctx).retTypes != null) {
-			            for (CType retType : ((FuncContext)_localctx).retTypes) {
-			                returnTypes.add(retType);
-			            }
-			        }
 
-			        // Cria o objeto CFuncDef
-			        ((FuncContext)_localctx).d =  new CFuncDef((((FuncContext)_localctx).id!=null?((FuncContext)_localctx).id.getText():null), paramList.toArray(new CVarDec[0]), returnTypes.toArray(new CType[0]), ((FuncContext)_localctx).cmds);
 			    
 			}
 		}
