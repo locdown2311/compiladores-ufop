@@ -3,12 +3,16 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import lang.nodes.CProg;
 import lang.parser.LangLexer;
 import lang.parser.LangParser;
-
+import lang.nodes.environment.Env;
+import lang.nodes.dotutils.*;
 import java.io.IOException;
 
 public class Demo {
+
+    public static CProg prg = null;
 
     public static void runLexer(String inputFile) throws IOException {
         LangLexer lexer = new LangLexer(CharStreams.fromFileName(inputFile));
@@ -25,14 +29,38 @@ public class Demo {
     public static void runParser(String inputFile) throws IOException {
         LangLexer lexer = new LangLexer(CharStreams.fromFileName(inputFile));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+        // Preenche o stream de tokens
         tokens.fill();
         LangParser parser = new LangParser(tokens);
-        ParseTree tree = parser.prog();
-        System.out.println(tree.toStringTree(parser));
+
+        parser.setBuildParseTree(false);
+
+        prg = (CProg) parser.prog().c;
     }
 
-    public static void runInterpreter(String inputFile) {
-        // Implement your interpreter logic here
+    public static void runDot(String inputFile) throws IOException {
+        if (prg == null) {
+            runParser(inputFile);
+        }
+        DotFile d = new DotFile();
+        prg.toDot(d);
+        String dotfname = inputFile.replaceFirst("\\.[^\\.]+$", ".dot");
+        System.out.println("Escrevendo saída para: " + dotfname);
+        d.writeToFile(dotfname);
+        return;
+    }
+
+    public static void runInterpreter(String inputFile) throws IOException {
+        LangLexer lexer = new LangLexer(CharStreams.fromFileName(inputFile));
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        tokens.fill();
+        LangParser parser = new LangParser(tokens);
+        parser.setBuildParseTree(false);
+        Env env = new Env();
+        prg = (CProg) parser.prog().c;
+        prg.interp(env);
+
     }
 
     public static void main(String[] args) throws IOException {
@@ -41,16 +69,20 @@ public class Demo {
             System.exit(1);
         }
 
-        String option = args[args.length - 1];
+        String option = args[args.length - 2];
         switch (option) {
             case "-lex":
-                runLexer(args[args.length - 2]);
+                runLexer(args[args.length - 1]);
                 break;
             case "-p":
-                runParser(args[args.length - 2]);
+                runParser(args[args.length - 1]);
                 break;
-            case "-lpi":
-                runInterpreter(args[args.length - 2]);
+            case "-i":
+                runInterpreter(args[args.length - 1]);
+                break;
+            case "-di":
+                runDot(args[args.length - 1]);
+                runInterpreter(args[args.length - 1]);
                 break;
             default:
                 System.err.println("Opção invalida");

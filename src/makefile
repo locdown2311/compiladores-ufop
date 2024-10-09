@@ -1,4 +1,5 @@
 # Variáveis
+ST_JAR = tools/ST-4.3.4.jar
 ANTLR_JAR=tools/antlr-4.13.2-complete.jar
 SRC_DIR=lang/parser
 LEXER=LangLexer.g4
@@ -25,6 +26,6 @@ $(SRC_DIR)/LangParser.java: $(SRC_DIR)/$(PARSER) $(SRC_DIR)/LangLexer.java
 
 # Compila todos os arquivos Java necessários
 compile: clean $(SRC_DIR)/LangLexer.java $(SRC_DIR)/LangParser.java $(JAVA_FILES) $(DEMO_FILE)
-	javac -cp .:$(ANTLR_JAR) $(SRC_DIR)/Lang*.java $(DEMO_FILE)
+	javac -cp .:$(ANTLR_JAR):$(ST_JAR) $(SRC_DIR)/Lang*.java $(DEMO_FILE)
 
 .PHONY: all clean compile

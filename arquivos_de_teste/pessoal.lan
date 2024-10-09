@@ -9,6 +9,11 @@ main(n :: Int, f :: Char) : Void{
    y = 2 / 3 + 2 + 1;
    print "ola";
 }
+
+data Teste{
+   var :: Int;
+}
+
 teste() : Int{
    print "ok";
 }

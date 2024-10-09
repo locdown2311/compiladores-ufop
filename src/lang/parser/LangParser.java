@@ -149,7 +149,7 @@ public class LangParser extends Parser {
 			{
 			setState(58);
 			((ProgContext)_localctx).e = defList();
-			 ((ProgContext)_localctx).c =  new CProg((CFuncDef[])((ProgContext)_localctx).e.df.toArray());
+			 ((ProgContext)_localctx).c =  new CProg(((ProgContext)_localctx).e.df.toArray(new CFuncDef[((ProgContext)_localctx).e.df.size()])); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -200,7 +200,8 @@ public class LangParser extends Parser {
 				((DefListContext)_localctx).d = def();
 				setState(62);
 				((DefListContext)_localctx).defList = defList();
-				((DefListContext)_localctx).defList.df.add( ((DefListContext)_localctx).d.d);  
+				 ((DefListContext)_localctx).df =  ((DefListContext)_localctx).defList.df != null ? ((DefListContext)_localctx).defList.df : new ArrayList<CFuncDef>(); _localctx.df.add(((DefListContext)_localctx).d.d); 
+						
 				}
 				break;
 			case 2:
@@ -208,8 +209,7 @@ public class LangParser extends Parser {
 				{
 				setState(65);
 				((DefListContext)_localctx).def = def();
-				 ((DefListContext)_localctx).df =  new ArrayList<CFuncDef>();
-				                        _localctx.df.add(((DefListContext)_localctx).def.d);
+				 ((DefListContext)_localctx).df =  new ArrayList<CFuncDef>(); _localctx.df.add(((DefListContext)_localctx).def.d); 
 				}
 				break;
 			}
@@ -341,8 +341,8 @@ public class LangParser extends Parser {
 			setState(87);
 			match(RBRACE);
 
-			        
-			   
+
+			    
 			}
 		}
 		catch (RecognitionException re) {
@@ -393,7 +393,6 @@ public class LangParser extends Parser {
 			setState(93);
 			match(SEMICOLON);
 
-			          System.out.println("Declarando variável: " + (((DeclContext)_localctx).id!=null?((DeclContext)_localctx).id.getText():null) + " do tipo " + ((DeclContext)_localctx).t.t);
 			          ((DeclContext)_localctx).decla =  new CVarDec((((DeclContext)_localctx).id!=null?((DeclContext)_localctx).id.getText():null), ((DeclContext)_localctx).t.t);
 			      
 			}
@@ -527,14 +526,8 @@ public class LangParser extends Parser {
 			setState(120);
 			match(RBRACE);
 
-			          List<CNode> commandList = new ArrayList<>();
-			          if (((FuncContext)_localctx).cmds != null) {
-			              commandList.addAll(((FuncContext)_localctx).cmds);
-			          }
-			          CType[] returnTypes = (((FuncContext)_localctx).retTypes != null) ? ((FuncContext)_localctx).retTypes.toArray(new CType[0]) : new CType[0];
-			          CVarDec[] paramsArray = (((FuncContext)_localctx).p.paramList != null) ? ((FuncContext)_localctx).p.paramList.toArray(new CVarDec[0]) : new CVarDec[0];
-			          
-			          ((FuncContext)_localctx).d =  new CFuncDef((((FuncContext)_localctx).id!=null?((FuncContext)_localctx).id.getText():null), paramsArray, returnTypes, new CBlock(commandList.toArray(new CNode[0])));      
+			        
+			    
 			}
 		}
 		catch (RecognitionException re) {
@@ -596,7 +589,9 @@ public class LangParser extends Parser {
 			match(DOUBLE_COLON);
 			setState(126);
 			((ParamsContext)_localctx).type = type();
-			 _localctx.paramList.add(new CVarDec((((ParamsContext)_localctx).ID!=null?((ParamsContext)_localctx).ID.getText():null), ((ParamsContext)_localctx).type.t)); 
+			 
+			        _localctx.paramList.add(new CVarDec((((ParamsContext)_localctx).ID!=null?((ParamsContext)_localctx).ID.getText():null), ((ParamsContext)_localctx).type.t)); 
+			    
 			setState(136);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -611,7 +606,9 @@ public class LangParser extends Parser {
 				match(DOUBLE_COLON);
 				setState(131);
 				((ParamsContext)_localctx).type = type();
-				 _localctx.paramList.add(new CVarDec((((ParamsContext)_localctx).ID!=null?((ParamsContext)_localctx).ID.getText():null), ((ParamsContext)_localctx).type.t)); 
+				 
+				            _localctx.paramList.add(new CVarDec((((ParamsContext)_localctx).ID!=null?((ParamsContext)_localctx).ID.getText():null), ((ParamsContext)_localctx).type.t)); 
+				        
 				}
 				}
 				setState(138);
@@ -956,7 +953,7 @@ public class LangParser extends Parser {
 			setState(191);
 			match(RBRACE);
 
-			      ((BlockContext)_localctx).rcmds =  ((BlockContext)_localctx).cmds.toArray(new CNode[((BlockContext)_localctx).cmds.size()]);
+
 			   
 			}
 		}
@@ -1136,7 +1133,7 @@ public class LangParser extends Parser {
 			setState(214);
 			match(SEMICOLON);
 
-			      ((ReadCmdContext)_localctx).c =  new CRead(((ReadCmdContext)_localctx).l.lval);
+			       ((ReadCmdContext)_localctx).c =  new CRead(((ReadCmdContext)_localctx).l.lval);
 			   
 			}
 		}
@@ -1259,16 +1256,7 @@ public class LangParser extends Parser {
 			setState(231);
 			match(SEMICOLON);
 
-			      List<Exp> exprList = new ArrayList<>();
-			      exprList.add(((ReturnCmdContext)_localctx).e.expr);
 			      
-			      if (((ReturnCmdContext)_localctx).es != null) {
-			          for (Exp exp : ((ReturnCmdContext)_localctx).es) {
-			              exprList.add(exp);
-			          }
-			      }
-			      
-			      ((ReturnCmdContext)_localctx).c =  new CRet(exprList.toArray(new Exp[0]));
 			   
 			}
 		}
@@ -1322,8 +1310,8 @@ public class LangParser extends Parser {
 			setState(237);
 			match(SEMICOLON);
 
-			      ((AssignCmdContext)_localctx).c =  new CAttr(((AssignCmdContext)_localctx).l.lval, ((AssignCmdContext)_localctx).e.expr);
-			   
+			        ((AssignCmdContext)_localctx).c =  new CAttr((Var)((AssignCmdContext)_localctx).l.lval, (Exp)((AssignCmdContext)_localctx).e.expr);
+			    
 			}
 		}
 		catch (RecognitionException re) {
@@ -2074,13 +2062,14 @@ public class LangParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class PrimaryExpContext extends ParserRuleContext {
 		public Exp expr;
+		public CNode array;
 		public Token il;
 		public Token fl;
 		public Token cl;
 		public Token sl;
 		public LvalueContext lv;
 		public ExpContext e;
-		public TypeContext t;
+		public TypeContext type;
 		public TerminalNode TRUE() { return getToken(LangParser.TRUE, 0); }
 		public TerminalNode FALSE() { return getToken(LangParser.FALSE, 0); }
 		public TerminalNode NULL() { return getToken(LangParser.NULL, 0); }
@@ -2212,7 +2201,7 @@ public class LangParser extends Parser {
 				setState(362);
 				match(NEW);
 				setState(363);
-				((PrimaryExpContext)_localctx).t = type();
+				((PrimaryExpContext)_localctx).type = type();
 				setState(370);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
@@ -2232,7 +2221,7 @@ public class LangParser extends Parser {
 					_la = _input.LA(1);
 				}
 				 
-				      
+				      ((PrimaryExpContext)_localctx).array =  new ArrInst("temp",((PrimaryExpContext)_localctx).e.expr,((PrimaryExpContext)_localctx).type.t);
 				     
 				}
 				break;
@@ -2323,7 +2312,9 @@ public class LangParser extends Parser {
 						((LvalueContext)_localctx).e = exp();
 						setState(384);
 						match(RBRACK);
-						 ((LvalueContext)_localctx).lval =  new CArrayAccess(((LvalueContext)_localctx).lv.lval, ((LvalueContext)_localctx).e.expr); 
+						 
+						                // ((LvalueContext)_localctx).lval =  new CArrayAccess(((LvalueContext)_localctx).lv.lval, ((LvalueContext)_localctx).e.expr); 
+						                
 						}
 						break;
 					case 2:
@@ -2337,7 +2328,9 @@ public class LangParser extends Parser {
 						match(DOT);
 						setState(389);
 						((LvalueContext)_localctx).id = match(ID);
-						 ((LvalueContext)_localctx).lval =  new CFieldAccess(((LvalueContext)_localctx).lv.lval, (((LvalueContext)_localctx).id!=null?((LvalueContext)_localctx).id.getText():null)); 
+
+						                 // ((LvalueContext)_localctx).lval =  new CFieldAccess(((LvalueContext)_localctx).lv.lval, (((LvalueContext)_localctx).id!=null?((LvalueContext)_localctx).id.getText():null)); 
+						                 
 						}
 						break;
 					}

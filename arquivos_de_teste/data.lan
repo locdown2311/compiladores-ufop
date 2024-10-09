@@ -1,4 +1,4 @@
-data Ponto { --Reclama que Ponto começa com letra maiuscula
+data Ponto {
    x :: Float;
    y :: Float;
 }
@@ -9,7 +9,6 @@ f(d :: Int ) : Int, Char{
 
 main(x :: Ponto){
    print x.x;
-   z = f(0)[0] + 2;
    y = a*b+c;
 }
 

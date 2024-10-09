@@ -17,9 +17,7 @@ public class CRead extends CNode {
     public void interp(Env env) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Digite um valor: ");
-        String lval = this.lvalue.eval(env);
         Object value = scanner.nextLine();
-        env.store(lval, value);
     }
 
     @Override
