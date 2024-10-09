@@ -1,145 +1,40 @@
-// CProg.stg
+attr(var, expr) ::= "<var> = <expr>;"
+lvalue(name, array) ::= "<name><array>"
+array_access(expr) ::= "[<expr>]"
+boolean_expr(value) ::= "<value>"
+float_expr(value) ::= "<value>"
+int_expr(value) ::= "<value>"
+new_array(var, type, expr) ::= "<var> = new <type>[<expr >]; "
+call(name, args) ::= <<<name>(<args; separator=" , " >)>>
+mul_expr(left_expr, right_expr) ::= "(<left_expr > *<right_expr >)"
+div_expr(left_expr, right_expr) ::= "(<left_expr > / <right_expr >)"
+mod_expr(left_expr, right_expr) ::= "(<left_expr > % <right_expr >)"
+add_expr(left_expr, right_expr) ::= "(<left_expr > + <right_expr >)"
+sub_expr(left_expr, right_expr) ::= "(<left_expr > − <right_expr >)"
 
-prog(c) ::= <<
-program {
-    <defList(c.df)>
+
+print(expr) ::= "System.out.println(<expr>) ; "
+return(expr) ::= "return <expr; separator=",">;"
+
+iterate(expr, stmt) ::= <<
+while(<expr>) {
+    <stmt>
 }
 >>
 
-defList(df) ::= <<
-<if(df)>
-    <def:df; separator="\n">
+if(expr, thn, els) ::= <<
+if(<expr>) {
+<thn>
+} <if(els)>else {
+<els>
+}
 <endif>
 >>
 
-def(d) ::= <<
-<data(d)> <func(d)>
->>
-
-data(d) ::= <<
-// Estrutura de Dados: <d.typeName>
-struct <d.typeName> {
-<decls(d.decls); separator="\n">
+func(type, name, params, decl, stmt) ::= <<
+static <type> <name>(<params; separator=" , " >) {
+    <if (decl)><decl; separator=",\n" >;<endif>
+    <stmt>
 }
 >>
 
-decl(decla) ::= <<
-    <decla.type> <decla.id>;
->>
-
-func(d) ::= <<
-// Função: <d.id>
-<returnTypes(d.returnTypes)> <d.id>(<params(d.params)>) {
-    <commands(d.commands); separator="\n">
-}
->>
-
-params(paramList) ::= <<
-<paramList: {p | <p.type> <p.id>}; separator=", ">
->>
-
-returnTypes(retTypes) ::= <<
-<if(retTypes)>
-    <retTypes; separator=", ">
-<else>
-    void
-<endif>
->>
-
-commands(cmds) ::= <<
-<cmds; separator="\n">
->>
-
-cmd(c) ::= <<
-<if(c instanceof CBlock)>
-    <block(c)>
-<elseif(c instanceof CIfthen)>
-    <ifCmd(c)>
-<elseif(c instanceof CLoop)>
-    <iterateCmd(c)>
-<elseif(c instanceof CRead)>
-    <readCmd(c)>
-<elseif(c instanceof Print)>
-    <printCmd(c)>
-<elseif(c instanceof CRet)>
-    <returnCmd(c)>
-<elseif(c instanceof CAttr)>
-    <assignCmd(c)>
-<endif>
->>
-
-block(b) ::= <<
-{
-    <commands(b.commands)>
-}
->>
-
-ifCmd(c) ::= <<
-if (<exp(c.condition)>) {
-    <cmd(c.thenCmd)>
-}<if(c.elseCmd != null)> else {
-    <cmd(c.elseCmd)>
-}<endif>
->>
-
-iterateCmd(c) ::= <<
-while (<exp(c.condition)>) {
-    <cmd(c.body)>
-}
->>
-
-readCmd(c) ::= <<
-read(<lvalue(c.lval)>);
->>
-
-printCmd(c) ::= <<
-print(<exp(c.expr)>);
->>
-
-returnCmd(c) ::= <<
-return <expList(c.exprs)>;
->>
-
-assignCmd(c) ::= <<
-<lvalue(c.lval)> = <exp(c.expr)>;
->>
-
-funcCallCmd(c) ::= <<
-<c.id>(<expList(c.args)>)
-<if(c.outArgs)>
-    outputs: <lvalueList(c.outArgs)>
-<endif>;
->>
-
-exp(e) ::= <<
-<if(e instanceof Or)>
-    (<exp(e.left)> || <exp(e.right)>)
-<elseif(e instanceof And)>
-    (<exp(e.left)> && <exp(e.right)>)
-<elseif(e instanceof Eq)>
-    (<exp(e.left)> == <exp(e.right)>)
-<elseif(e instanceof Ne)>
-    (<exp(e.left)> != <exp(e.right)>)
-// Continue para os outros tipos de expressão
-<else>
-    <e>
-<endif>
->>
-
-lvalue(lv) ::= <<
-<if(lv instanceof Var)>
-    <lv.id>
-<elseif(lv instanceof CArrayAccess)>
-    <lvalue(lv.array)>[<exp(lv.index)>]
-<elseif(lv instanceof CFieldAccess)>
-    <lvalue(lv.struct)>.<lv.field>
-<endif>
->>
-
-expList(exprs) ::= <<
-<exprs: {e | <exp(e)>}; separator=", ">
->>
-
-lvalueList(lvals) ::= <<
-<lvals: {lv | <lvalue(lv)>}; separator=", ">
->>

@@ -81,7 +81,7 @@ public class Demo {
                 runInterpreter(args[args.length - 1]);
                 break;
             case "-di":
-                runDot(args[args.length - 1]);
+                //runDot(args[args.length - 1]);
                 runInterpreter(args[args.length - 1]);
                 break;
             default:

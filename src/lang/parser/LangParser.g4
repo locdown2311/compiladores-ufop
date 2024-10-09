@@ -25,7 +25,7 @@ defList
 def
 	returns[CFuncDef d]:
 	data {$d = $data.d; }
-	| func {$d = $func.d; };
+	func {$d = $func.d; };
 
 // Definição de estrutura de dados
 data
@@ -47,9 +47,20 @@ func
     id = ID LPAREN p = params? RPAREN (
         COLON retTypes += type (COMMA retTypes += type)*
     )? LBRACE cmds += cmd* RBRACE {
+        // Cria a lista de parâmetros
+        ArrayList<CVarDec> paramList = ($p.text != null) ? $p.paramList : new ArrayList<CVarDec>();
         
-    };
+        // Cria a lista de tipos de retorno
+        ArrayList<CType> returnTypes = new ArrayList<>();
+        if ($retTypes != null) {
+            for (CType retType : $retTypes) {
+                returnTypes.add(retType);
+            }
+        }
 
+        // Cria o objeto CFuncDef
+        $d = new CFuncDef($id.text, paramList.toArray(new CVarDec[0]), returnTypes.toArray(new CType[0]), $cmds);
+    };
 // Parâmetros de função
 params
     returns[ArrayList<CVarDec> paramList]:
@@ -80,21 +91,22 @@ btype
 
 // Comandos
 cmd
-	returns[CNode c]:
-	block { $c = new CBlock($block.rcmds); }
-	| ifCmd { $c = $ifCmd.c; }
-	| iterateCmd { $c = $iterateCmd.c; }
-	| readCmd { $c = $readCmd.c; }
-	| printCmd { $c = $printCmd.c; }
-	| returnCmd { $c = $returnCmd.c; }
-	| assignCmd { $c = $assignCmd.c; }
-	| funcCallCmd;
+    returns [CNode c]:
+    block { $c = new CBlock($block.rcmds); }
+    | ifCmd { $c = $ifCmd.c; }
+    | iterateCmd { $c = $iterateCmd.c; }
+    | readCmd { $c = $readCmd.c; }
+    | printCmd { $c = $printCmd.c; }
+    | returnCmd { $c = $returnCmd.c; }
+    | assignCmd { $c = $assignCmd.c; }
+    | funcCallCmd;
 
 block
-	returns[CNode[] rcmds]:
-	LBRACE cmds += cmd* RBRACE {
-
-   };
+    returns [CNode[] rcmds]:
+    LBRACE cmds += cmd* RBRACE {
+        $rcmds = $cmds.stream().map(cmd -> cmd.c).toArray(CNode[]::new);
+    }
+    ;
 ifCmd
 	returns[CNode c]:
 	IF LPAREN e = exp RPAREN thenCmd = cmd (ELSE elseCmd = cmd)? {
@@ -127,12 +139,12 @@ assignCmd
         $c = new CAttr((Var)$l.lval, (Exp)$e.expr);
     };
 funcCallCmd
-	returns[CNode c]:
-	id = ID LPAREN args = exps? RPAREN (
-		LESS_THAN outArgs += lvalue (COMMA outArgs += lvalue)* GREATER_THAN
-	)? SEMICOLON {
-
-     };
+    returns[CNode c]:
+    id = ID LPAREN args = exps? RPAREN (
+        LESS_THAN outArgs += lvalue (COMMA outArgs += lvalue)* GREATER_THAN
+    )? SEMICOLON {
+        
+    };
 exp
 	returns[Exp expr]: e = logicalOrExp { $expr = $e.expr; };
 
@@ -238,10 +250,10 @@ lvalue
 	returns[Exp lval]:
 	id = ID { $lval = new Var($id.text); }
 	| lv = lvalue LBRACK e = exp RBRACK { 
-      // $lval = new CArrayAccess($lv.lval, $e.expr); 
+       $lval = new CArrayAccess($lv.lval, $e.expr); 
       }
 	| lv = lvalue DOT id = ID {
-       // $lval = new CFieldAccess($lv.lval, $id.text); 
+        $lval = new CFieldAccess($lv.lval, $id.text); 
        };
 
 // Lista de expressões

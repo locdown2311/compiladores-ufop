@@ -16,4 +16,6 @@ data Teste{
 
 teste() : Int{
    print "ok";
+   var = new Int[10];
+   read var;
 }
