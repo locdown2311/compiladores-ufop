@@ -24,6 +24,9 @@ public class TVisitor extends Visitor{
     public void visit(CFuncDef c){}
     public void visit(CType t){}
     public void visit(CVarDec c){}
+    public void visit(CData c){}
+    public void visit(Call c){}
+
 
 
     public void visit(CRead c){}

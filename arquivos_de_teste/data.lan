@@ -1,18 +1,18 @@
 data Ponto {
-   x :: Float;
-   y :: Float;
+    x :: Float;
+    y :: Float;
 }
 
-f(d :: Int ) : Int, Char{
-    return 0, '\n';
+main(p :: Ponto): Int, Float {
+    a = 5;
+    b = 3;
+    c = 2;
+    p.x = (a * b) + c;
+    print p.x;
 }
 
-main(x :: Ponto){
-   print x.x;
-   y = a*b+c;
+divmod(num :: Int, div :: Int): Int, Int {
+    q = num / div;
+    r = num % div;
+    return 0, a;
 }
-
-data Tipo {
-   x :: Int;
-}
-

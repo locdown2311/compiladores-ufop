@@ -3,5 +3,5 @@ divmod(num :: Int, div :: Int) : Int, Int {
       q = num / div;
       r = 0;
    }
-   return q,r;
+   return (q,r) ;
 }

@@ -19,6 +19,9 @@ public class CProg extends CNode {
     }
 
     public Object getFunctionByID(String id) {
+
+        System.out.println("Numero de funções " + funcs.length);
+        
         for (CFuncDef fn : funcs) {
             if (fn.getID().equals(id)) {
                 return fn;

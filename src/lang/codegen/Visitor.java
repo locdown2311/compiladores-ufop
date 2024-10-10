@@ -11,6 +11,9 @@ public abstract class Visitor {
     public abstract void visit(CFuncDef c);
     public abstract void visit(CType t);
     public abstract void visit(CVarDec c);
+    public abstract void visit(CData c);
+    public abstract void visit(Call c);
+
 
 
     public abstract void visit(CRead c);

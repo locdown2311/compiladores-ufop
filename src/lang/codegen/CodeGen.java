@@ -21,6 +21,8 @@ public class CodeGen extends Visitor {
 
     public void visit(CFuncDef c) {
     }
+    public void visit(CData c) {
+    }
 
     public void visit(CType t) {
     }
@@ -43,6 +45,8 @@ public class CodeGen extends Visitor {
     public void visit(CAttr c) {
     }
 
+    public void visit(Call c) {
+    }
     public void visit(ArrInst c) {
     }
 

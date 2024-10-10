@@ -40,6 +40,12 @@ public interface LangParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitData(LangParser.DataContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link LangParser#decls}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDecls(LangParser.DeclsContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LangParser#decl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -88,6 +94,12 @@ public interface LangParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCmdList(LangParser.CmdListContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link LangParser#cmdRest}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCmdRest(LangParser.CmdRestContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LangParser#cmd}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -123,12 +135,6 @@ public interface LangParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitPrintCmd(LangParser.PrintCmdContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link LangParser#returnList}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitReturnList(LangParser.ReturnListContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#returnCmd}.
 	 * @param ctx the parse tree

@@ -15,15 +15,14 @@ options {
 prog
     returns[CProg c]:
     e = defList { 
-        List<CFuncDef> defs = $e.df != null ? $e.df : new ArrayList<>();
+        List<CFuncDef> defs = $e.df != null ? $e.df : new ArrayList<CFuncDef>();
         $c = new CProg(defs.toArray(new CFuncDef[defs.size()]));
     };
 
 defList
     returns[ArrayList<CFuncDef> df]:
-        { $df = new ArrayList<CFuncDef>(); } 
-        d = def defList { $df.add($d.d); $df.addAll($defList.df); }
-    | { $df = new ArrayList<CFuncDef>(); } // retorna a lista vazia
+        { $df = new ArrayList<CFuncDef>(); }
+        (d = def { $df.add($d.d); })*
     ;
 // Regras para definições
 def returns[CFuncDef d]:
@@ -33,9 +32,17 @@ def returns[CFuncDef d]:
 // Definição de estrutura de dados
 data
     returns[CFuncDef d]:
-    DATA typeName = TYPE LBRACE decls = decl* RBRACE {
+    DATA typeName = TYPE LBRACE dec = decls RBRACE {
+        $d = new CData($typeName.text, $decls.list);
+    }
+;
 
-    };
+
+decls
+    returns[List<CVarDec> list]:
+    { $list = new ArrayList<CVarDec>(); }
+    (decl { $list.add($decl.decla); })*
+;
 
 // Declaração de variável em uma estrutura de dados
 decl
@@ -45,21 +52,27 @@ decl
       };
 
 // Definição de função
-func
-    returns[CFuncDef d]:
-    id = ID LPAREN p = params? RPAREN COLON mrets LBRACE cmd RBRACE {
-       $d = new CFuncDef($id.text, (CVarDec[])$p.paramList.toArray(), (CType[])$mrets.retList.toArray(), $cmd.c );
-    };
-
-mrets returns [ArrayList<CType> retList]:
-    rets { $retList = $rets.retList; }
-    |   { $retList = new ArrayList<CType>();}
+func returns[CFuncDef d]:
+    id = ID LPAREN p = params? RPAREN COLON mrets LBRACE cmdList RBRACE {
+        $d = new CFuncDef($id.text, (CVarDec[])$p.paramList.toArray(new CVarDec[0]), (CType[])$mrets.retList.toArray(new CType[0]), new CBlock($cmdList.arrc.toArray(new CNode[0])));
+    }
 ;
 
-rets returns [ArrayList<CType> retList]:
-     type { $retList = new ArrayList<CType>(); }
-    |type COMMA rets { $rets.retList.add($type.t); }
+mrets returns [ArrayList<CType> retList]:
+    { $retList = new ArrayList<CType>(); }
+    rets { $retList.addAll($rets.retList); }
+    | { /* já inicializado como vazio */ }
     ;
+
+
+rets returns [ArrayList<CType> retList]:
+    { $retList = new ArrayList<CType>(); } // Inicialize no início
+    (type { $retList.add($type.t); }
+    | type COMMA next=rets { 
+        $retList.add($type.t);
+        $retList.addAll($next.retList);
+    })
+;
 
 
 // Parâmetros de função
@@ -88,10 +101,16 @@ btype
 	| TYPE { $base = CBaseType.TYPE; };
 
 cmdList returns [ArrayList<CNode> arrc]:
-    cmd cmdList { $cmdList.arrc.add($cmd.c);}
-   |cmd { $arrc = new ArrayList<CNode>();
-          $arrc.add($cmd.c);}
-   ;
+    { $arrc = new ArrayList<CNode>(); } // Inicialize aqui
+    (cmd cmdRest { $arrc.add($cmd.c); $arrc.addAll($cmdRest.arrv); }
+    | cmd { $arrc.add($cmd.c); })
+    ;
+
+cmdRest returns [ArrayList<CNode> arrv]:
+    { $arrv = new ArrayList<CNode>(); } // Inicialize aqui
+    (cmd cmdRest { $arrv.add($cmd.c); $arrv.addAll($cmdRest.arrv); }
+    | { /* Nada a fazer, lista pronta */ })
+    ;
 // Comandos
 cmd
     returns [CNode c]:
@@ -102,12 +121,12 @@ cmd
     | printCmd { $c = $printCmd.c; }
     | returnCmd { $c = $returnCmd.c; }
     | assignCmd { $c = $assignCmd.c; }
-    | funcCallCmd;
+    | funcCallCmd {$c = $funcCallCmd.c;};
 
 block
     returns [CBlock c]:
     LBRACE cmdList RBRACE {
-        CNode[] temp = (CNode[]) $cmdList.arrc.toArray();
+        CNode[] temp = $cmdList.arrc.toArray(new CNode[0]);
         $c = new CBlock(temp);
     }
     ;
@@ -133,28 +152,34 @@ printCmd
 	PRINT e = exp SEMICOLON {
       $c = new Print($e.expr);
    };
-returnList returns [ArrayList<Exp> arret]:
-    primaryExp returnList { $returnList.arret.add($primaryExp.expr);}
-   |primaryExp { $arret = new ArrayList<Exp>();
-                 $arret.add($primaryExp.expr);}
-   ;
 returnCmd
-	returns[CNode c]:
-	RETURN e = exp (COMMA returnList)? SEMICOLON {
-      $c = new CRet($returnList.arret);
-   };
+    returns[CNode c]:
+    { ArrayList<Exp> es = new ArrayList<>(); }
+    RETURN e = exp (COMMA e2 = exp { es.add($e2.expr); })* SEMICOLON {
+        es.add(0, $e.expr);
+        $c = new CRet(es);
+    }
+;
+
 assignCmd
-	returns[CNode c]:
-	l = lvalue ATTR e = exp SEMICOLON {
-        $c = new CAttr((Var)$l.lval, (Exp)$e.expr);
-    };
+    returns[CNode c]:
+    simpleVar = ID ATTR e = exp SEMICOLON {
+        $c = new CAttr(new Var($simpleVar.text), (Exp)$e.expr);
+    }
+    | complexVar = lvalue ATTR e = exp SEMICOLON {
+        $c = new CAttr($complexVar.lval, (Exp)$e.expr);
+    }
+    ;
 funcCallCmd
     returns[CNode c]:
+    { ArrayList<Exp> outArgsList = new ArrayList<>(); }
     id = ID LPAREN args = exps? RPAREN (
-        LESS_THAN outArgs += lvalue (COMMA outArgs += lvalue)* GREATER_THAN
+        LESS_THAN l = lvalue { outArgsList.add($l.lval); } (COMMA l2 = lvalue { outArgsList.add($l2.lval); })* GREATER_THAN
     )? SEMICOLON {
-        
-    };
+        Exp[] argArray = ($args.text != null) ? $args.exprs.toArray(new Exp[0]) : new Exp[0];
+        $c = new Call($id.text, argArray);
+    }
+;
 
 exp
 	returns[Exp expr]: e = logicalOrExp { $expr = $e.expr; };
@@ -258,12 +283,12 @@ primaryExp
      };
 // Lvalue
 lvalue
-	returns[Exp lval]:
-	id = ID { $lval = new Var($id.text); }
-	| lv = lvalue LBRACK e = exp RBRACK { 
+    returns[Exp lval]:
+    id = ID { $lval = new Var($id.text); }
+    | lv = lvalue LBRACK e = exp RBRACK { 
        $lval = new CArrayAccess($lv.lval, $e.expr); 
       }
-	| lv = lvalue DOT id = ID {
+    | lv = lvalue DOT id = ID {
         $lval = new CFieldAccess($lv.lval, $id.text); 
        };
 
