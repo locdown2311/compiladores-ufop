@@ -1,5 +1,6 @@
 package lang.nodes;
 
+import lang.codegen.Visitor;
 import lang.nodes.dotutils.DotFile;
 import lang.nodes.expr.Exp;
 import lang.nodes.environment.Env;
@@ -34,6 +35,7 @@ public class CIfthen extends CNode {
              cthen.interp(e);
          }else if(celse != null){celse.interp(e);}
       }
+    public void accept (Visitor v) {v.visit(this);}
 
       public int toDot(DotFile d){
          int nc = cond.toDot(d);

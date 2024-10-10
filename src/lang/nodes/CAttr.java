@@ -1,5 +1,6 @@
 package lang.nodes;
 
+import lang.codegen.Visitor;
 import lang.nodes.dotutils.DotFile;
 import lang.nodes.environment.Env;
 import lang.nodes.expr.Exp;
@@ -22,6 +23,8 @@ public class CAttr extends CNode {
       public void interp(Env env){
          env.store(v.getName(),e.eval(env));
       }
+      public void accept (Visitor v) {v.visit(this);}
+
 
       public int toDot(DotFile d){
          int nv = v.toDot(d);

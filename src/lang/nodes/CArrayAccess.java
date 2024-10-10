@@ -2,6 +2,7 @@ package lang.nodes;
 
 import lang.nodes.expr.Exp;
 import lang.nodes.environment.*;
+import lang.codegen.Visitor;
 import lang.nodes.dotutils.DotFile;
 
 public class CArrayAccess extends Exp {
@@ -30,6 +31,10 @@ public class CArrayAccess extends Exp {
     public Object eval(Env e) {
         return 0;
     };
+
+    public void accept(Visitor v) {
+        v.visit(this);
+    }
 
     public int toDot(DotFile d) {
         return 0;

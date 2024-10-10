@@ -1,5 +1,6 @@
 package lang.nodes;
 
+import lang.codegen.Visitor;
 import lang.nodes.dotutils.DotFile;
 import lang.nodes.environment.Env;
 import java.util.ArrayList;
@@ -63,6 +64,8 @@ public class CFuncDef extends CNode {
     public void interp(Env env) {
         body.interp(env);
     }
+    public void accept (Visitor v) {v.visit(this);}
+
 
     public int toDot(DotFile d) {
         int root = d.addNode("Func:");

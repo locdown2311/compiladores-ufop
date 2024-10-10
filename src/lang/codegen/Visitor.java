@@ -5,120 +5,50 @@ import lang.nodes.environment.Env;
 import lang.nodes.expr.*;
 import lang.nodes.*;
 
-public class Visitor {
-    private STGroup groupTemplate;
-    private String fileName;
-    private Env env;
+public abstract class Visitor {
 
-    public Visitor(String fileName, Env env) {
-        this.groupTemplate = new STGroupFile("./Template.stg");
-        this.fileName = fileName;
-        this.env = env;
-    }
+    public abstract void visit(CProg c);
+    public abstract void visit(CFuncDef c);
+    public abstract void visit(CType t);
+    public abstract void visit(CVarDec c);
 
-    public void visit(Plus e) {
-        ST aux = groupTemplate.getInstanceOf("add_expr");
-        e.getLeft().accept(this);
-        aux.add(" left_expr ", expr);
-        e.getRight().accept(this);
-        aux.add(" right_expr ", expr);
-        expr = aux;
-    }
-    public void visit(Minus e) {
-        ST aux = groupTemplate.getInstanceOf("sub_expr");
-        e.getLeft().accept(this);
-        aux.add(" left_expr ", expr);
-        e.getRight().accept(this);
-        aux.add(" right_expr ", expr);
-        expr = aux;
-    }
-    public void visit(Times e) {
-        ST aux = groupTemplate.getInstanceOf("mul_expr");
-        e.getLeft().accept(this);
-        aux.add(" left_expr ", expr);
-        e.getRight().accept(this);
-        aux.add(" right_expr ", expr);
-        expr = aux;
-    }
-    public void visit(Div e) {
-        ST aux = groupTemplate.getInstanceOf("div_expr");
-        e.getLeft().accept(this);
-        aux.add(" left_expr ", expr);
-        e.getRight().accept(this);
-        aux.add(" right_expr ", expr);
-        expr = aux;
-    }
-    public void visit(Mod e) {
-        ST aux = groupTemplate.getInstanceOf("mod_expr");
-        e.getLeft().accept(this);
-        aux.add(" left_expr ", expr);
-        e.getRight().accept(this);
-        aux.add(" right_expr ", expr);
-        expr = aux;
-    }
-    public void visit(Lt e) {
-        ST aux = groupTemplate.getInstanceOf("lt_expr");
-        e.getLeft().accept(this);
-        aux.add(" left_expr ", expr);
-        e.getRight().accept(this);
-        aux.add(" right_expr ", expr);
-        expr = aux;
-    }
-    public void visit(Gt e) {
-        ST aux = groupTemplate.getInstanceOf("gt_expr");
-        e.getLeft().accept(this);
-        aux.add(" left_expr ", expr);
-        e.getRight().accept(this);
-        aux.add(" right_expr ", expr);
-        expr = aux;
-    }
-    public void visit(Loe e) {
-        ST aux = groupTemplate.getInstanceOf("loe_expr");
-        e.getLeft().accept(this);
-        aux.add(" left_expr ", expr);
-        e.getRight().accept(this);
-        aux.add(" right_expr ", expr);
-        expr = aux;
-    }
-    public void visit(Goe e) {
-        ST aux = groupTemplate.getInstanceOf("goe_expr");
-        e.getLeft().accept(this);
-        aux.add(" left_expr ", expr);
-        e.getRight().accept(this);
-        aux.add(" right_expr ", expr);
-        expr = aux;
-    }
-    public void visit(Eq e) {
-        ST aux = groupTemplate.getInstanceOf("eq_expr");
-        e.getLeft().accept(this);
-        aux.add(" left_expr ", expr);
-        e.getRight().accept(this);
-        aux.add(" right_expr ", expr);
-        expr = aux;
-    }
-    public void visit(Ne e) {
-        ST aux = groupTemplate.getInstanceOf("neq_expr");
-        e.getLeft().accept(this);
-        aux.add(" left_expr ", expr);
-        e.getRight().accept(this);
-        aux.add(" right_expr ", expr);
-        expr = aux;
-    }
-    public void visit(And e) {
-        ST aux = groupTemplate.getInstanceOf("and_expr");
-        e.getLeft().accept(this);
-        aux.add(" left_expr ", expr);
-        e.getRight().accept(this);
-        aux.add(" right_expr ", expr);
-        expr = aux;
-    }
-    public void visit(Or e) {
-        ST aux = groupTemplate.getInstanceOf("or_expr");
-        e.getLeft().accept(this);
-        aux.add(" left_expr ", expr);
-        e.getRight().accept(this);
-        aux.add(" right_expr ", expr);
-        expr = aux;
-    }
+
+    public abstract void visit(CRead c);
+    public abstract void visit(CBlock c);
+    public abstract void visit(Print c);
+    public abstract void visit(CRet c);
+    public abstract void visit(CAttr c);
+    public abstract void visit(ArrInst c);
+    public abstract void visit(CIfthen c);
+    public abstract void visit(CLoop c);
+
+    public abstract void visit(Plus e);
+    public abstract void visit(Minus e);
+    public abstract void visit(Times e);
+    public abstract void visit(Div e);
+    public abstract void visit(Mod e);
+
+    public abstract void visit(Lt e);
+    public abstract void visit(Gt e);
+    public abstract void visit(Loe e);
+    public abstract void visit(Goe e);
+    public abstract void visit(Eq e);
+    public abstract void visit(Ne e);
+
+    public abstract void visit(And e);
+    public abstract void visit(Or e);
+    public abstract void visit(Not e);
+
+    public abstract void visit(Var e);
+    public abstract void visit(IntLit e);
+    public abstract void visit(CharLit e);
+    public abstract void visit(FloatLit e);
+    public abstract void visit(BoolLit e);
+    public abstract void visit(StringLit e);
+    public abstract void visit(Uminus e);
+
+    public abstract void visit(CFieldAccess e);
+    public abstract void visit(CArrayAccess e);
+    public abstract void visit(CNull e);
 
 }

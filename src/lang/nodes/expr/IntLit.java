@@ -1,24 +1,32 @@
 package lang.nodes.expr;
 
+import lang.codegen.Visitor;
 import lang.nodes.dotutils.DotFile;
 import lang.nodes.dotutils.DotFile;
 import lang.nodes.environment.Env;
 
-public class IntLit extends Exp{
+public class IntLit extends Exp {
 
-      private int value;
-      public IntLit(int value){
-           super();
-           this.value = value;
-      }
+    private int value;
 
-      public int getValue(){ return value;}
+    public IntLit(int value) {
+        super();
+        this.value = value;
+    }
 
-      public Object eval(Env e){
-          return value;
-      }
+    public void accept(Visitor v) {
+        v.visit(this);
+    }
 
-      public int toDot(DotFile d){
-         return d.addNode(""+value);
-      }
+    public int getValue() {
+        return value;
+    }
+
+    public Object eval(Env e) {
+        return value;
+    }
+
+    public int toDot(DotFile d) {
+        return d.addNode("" + value);
+    }
 }

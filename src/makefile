@@ -2,6 +2,7 @@
 ST_JAR = tools/ST-4.3.4.jar
 ANTLR_JAR=tools/antlr-4.13.2-complete.jar
 SRC_DIR=lang/parser
+CLEAN_DIR=lang
 LEXER=LangLexer.g4
 PARSER=LangParser.g4
 JAVA_FILES=$(wildcard $(SRC_DIR)/Lang*.java)
@@ -12,8 +13,7 @@ all: compile
 
 # Remove os arquivos .class antigos
 clean:
-	rm -f $(SRC_DIR)/LangParser*.class $(SRC_DIR)/LangLexer*.class
-
+	find $(CLEAN_DIR) -name "*.class" -type f -delete
 # Compila o analisador léxico
 $(SRC_DIR)/LangLexer.java: $(SRC_DIR)/$(LEXER)
 	java -jar $(ANTLR_JAR) $(SRC_DIR)/$(LEXER)

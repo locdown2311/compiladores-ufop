@@ -3,11 +3,15 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import lang.codegen.CodeGen;
+import lang.codegen.Visitor;
+import lang.codegen.TVisitor;
 import lang.nodes.CProg;
 import lang.parser.LangLexer;
 import lang.parser.LangParser;
 import lang.nodes.environment.Env;
 import lang.nodes.dotutils.*;
+
 import java.io.IOException;
 
 public class Demo {
@@ -63,6 +67,20 @@ public class Demo {
 
     }
 
+    public static void runGen(String path) throws IOException {
+        if (prg == null) {
+            runParser(path);
+        }
+        Env env = new Env();
+        TVisitor tv = new TVisitor();
+        prg.accept(tv);
+        CodeGen v = new CodeGen(env);
+        prg.accept(v);
+        //v.printProgram();
+
+        return;
+    }
+
     public static void main(String[] args) throws IOException {
         if (args.length < 1) {
             System.err.println("Use: Demo <arquivo>");
@@ -81,8 +99,11 @@ public class Demo {
                 runInterpreter(args[args.length - 1]);
                 break;
             case "-di":
-                //runDot(args[args.length - 1]);
+                runDot(args[args.length - 1]);
                 runInterpreter(args[args.length - 1]);
+                break;
+            case "-g":
+                runGen(args[args.length - 1]);
                 break;
             default:
                 System.err.println("Opção invalida");

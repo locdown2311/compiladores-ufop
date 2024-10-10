@@ -1,6 +1,7 @@
 package lang.nodes;
 
 import lang.nodes.environment.Env;
+import lang.codegen.Visitor;
 import lang.nodes.dotutils.DotFile;
 import java.util.Scanner;
 
@@ -19,6 +20,7 @@ public class CRead extends CNode {
         System.out.print("Digite um valor: ");
         Object value = scanner.nextLine();
     }
+    public void accept (Visitor v) {v.visit(this);}
 
     @Override
     public int toDot(DotFile d) {

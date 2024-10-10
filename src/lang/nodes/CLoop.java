@@ -1,5 +1,6 @@
 package lang.nodes;
 
+import lang.codegen.Visitor;
 import lang.nodes.dotutils.DotFile;
 import lang.nodes.expr.Exp;
 import lang.nodes.environment.Env;
@@ -24,6 +25,7 @@ public class CLoop extends CNode {
                   body.interp(e);
              }
       }
+    public void accept (Visitor v) {v.visit(this);}
 
       public int toDot(DotFile d){
          int nc = cond.toDot(d);

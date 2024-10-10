@@ -1,5 +1,6 @@
 package lang.nodes;
 
+import lang.codegen.Visitor;
 import lang.nodes.dotutils.DotFile;
 import lang.nodes.environment.Env;
 
@@ -15,6 +16,8 @@ public abstract class CNode  {
      public int getColumn() {
           return -1;
      }
+
+     abstract public void accept (Visitor v);
 
      abstract public int toDot(DotFile d);
 

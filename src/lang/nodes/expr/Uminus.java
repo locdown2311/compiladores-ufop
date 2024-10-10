@@ -1,5 +1,6 @@
 package lang.nodes.expr;
 
+import lang.codegen.Visitor;
 import lang.nodes.dotutils.DotFile;
 import lang.nodes.environment.Env;
 
@@ -19,6 +20,10 @@ public class Uminus extends Exp {
             return -(Float) value;
         }
         throw new RuntimeException("operador - : argumento inválido");
+    }
+
+    public void accept(Visitor v) {
+        v.visit(this);
     }
 
     public int toDot(DotFile d) {

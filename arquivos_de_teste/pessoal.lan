@@ -1,9 +1,7 @@
-data Teste{
-   var :: Int;
-}
-
-teste() : Int{
-   print "ok";
-   var = new Int[10];
-   read var;
+divmod(num :: Int, div :: Int) : Int, Int {
+   if(div != 0){
+      q = num / div;
+      r = 0;
+   }
+   return q,r;
 }

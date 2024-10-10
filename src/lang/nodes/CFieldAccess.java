@@ -2,6 +2,7 @@ package lang.nodes;
 
 import lang.nodes.expr.Exp;
 import lang.nodes.environment.*;
+import lang.codegen.Visitor;
 import lang.nodes.dotutils.DotFile;
 
 public class CFieldAccess extends Exp {
@@ -25,6 +26,7 @@ public class CFieldAccess extends Exp {
     public String toString() {
         return object.toString() + "." + fieldName;
     }
+    public void accept (Visitor v) {v.visit(this);}
 
     public Object eval(Env e) {
         return 0;

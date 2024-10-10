@@ -13,6 +13,6 @@ public abstract class BinOp extends Exp {
       }
 
       public Exp getLeft(){return left;}
-      public Exp getRigth(){return rigth;}
+      public Exp getRight(){return rigth;}
 }
 
