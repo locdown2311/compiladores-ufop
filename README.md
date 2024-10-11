@@ -61,6 +61,7 @@ Alcançamos os seguintes objetivos:
 
 1. Implementação bem-sucedida do analisador léxico e sintático.
 2. Geração da Árvore de Sintaxe Abstrata (AST) para os arquivos de entrada.
-3. Geração de código Source to Source
+3. Implementação de interpretador.
+4. Geração de código Source to Source
 
 Este projeto tem sido uma excelente oportunidade de aprendizado, permitindo-nos aplicar conceitos teóricos em um cenário prático de desenvolvimento de compiladores.
