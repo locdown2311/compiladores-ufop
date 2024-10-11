@@ -1,0 +1,150 @@
+digraph {
+    n0 [ label = "Prog"] 
+    n1 [ label = "Data:"] 
+    n2 [ label = "Ponto"] 
+    n3 [ label = "FLOAT"] 
+    n4 [ label = " VarDec "] 
+    n5 [ label = "x"] 
+    n6 [ label = "FLOAT"] 
+    n7 [ label = " VarDec "] 
+    n8 [ label = "y"] 
+    n9 [ label = "Func:"] 
+    n10 [ label = "inicio"] 
+    n11 [ label = "TYPE"] 
+    n12 [ label = " VarDec "] 
+    n13 [ label = "p"] 
+    n14 [ label = "INT"] 
+    n15 [ label = "FLOAT"] 
+    n16 [ label = "Block"] 
+    n17 [ label = "a"] 
+    n18 [ label = "10"] 
+    n19 [ label = "Attr"] 
+    n20 [ label = "b"] 
+    n21 [ label = "3"] 
+    n22 [ label = "Attr"] 
+    n23 [ label = "c"] 
+    n24 [ label = "3"] 
+    n25 [ label = "UMinus"] 
+    n26 [ label = "Attr"] 
+    n27 [ label = "teste"] 
+    n28 [ label = "false"] 
+    n29 [ label = "Attr"] 
+    n30 [ label = "teste2"] 
+    n31 [ label = "true"] 
+    n32 [ label = "Attr"] 
+    n33 [ label = "a"] 
+    n34 [ label = "3"] 
+    n35 [ label = "Goe"] 
+    n36 [ label = "Block"] 
+    n37 [ label = "\'MAIOR\'"] 
+    n38 [ label = "Print"] 
+    n39 [ label = "If"] 
+    n40 [ label = "a"] 
+    n41 [ label = "2"] 
+    n42 [ label = "Goe"] 
+    n43 [ label = "Block"] 
+    n44 [ label = "a"] 
+    n45 [ label = "a"] 
+    n46 [ label = "1"] 
+    n47 [ label = "Minus"] 
+    n48 [ label = "Attr"] 
+    n49 [ label = "Loop"] 
+    n50 [ label = "teste"] 
+    n51 [ label = "teste2"] 
+    n52 [ label = "Ne"] 
+    n53 [ label = "Print"] 
+    n54 [ label = "\'Logico\'"] 
+    n55 [ label = "Print"] 
+    n56 [ label = "teste"] 
+    n57 [ label = "teste2"] 
+    n58 [ label = "And"] 
+    n59 [ label = "Print"] 
+    n60 [ label = "teste"] 
+    n61 [ label = "teste2"] 
+    n62 [ label = "Or"] 
+    n63 [ label = "Print"] 
+    n64 [ label = "\'Aritmetica\'"] 
+    n65 [ label = "Print"] 
+    n66 [ label = "a"] 
+    n67 [ label = "b"] 
+    n68 [ label = "Minus"] 
+    n69 [ label = "Print"] 
+    n70 [ label = "a"] 
+    n71 [ label = "b"] 
+    n72 [ label = "Minus"] 
+    n73 [ label = "Print"] 
+    n4 -> n3 
+    n4 -> n5 
+    n1 -> n4 
+    n7 -> n6 
+    n7 -> n8 
+    n1 -> n7 
+    n1 -> n2 
+    n1 -> n7 
+    n0 -> n1 
+    n12 -> n11 
+    n12 -> n13 
+    n9 -> n12 
+    n9 -> n14 
+    n9 -> n15 
+    n19 -> n17 
+    n19 -> n18 
+    n16 -> n19 
+    n22 -> n20 
+    n22 -> n21 
+    n16 -> n22 
+    n25 -> n24 
+    n26 -> n23 
+    n26 -> n25 
+    n16 -> n26 
+    n29 -> n27 
+    n29 -> n28 
+    n16 -> n29 
+    n32 -> n30 
+    n32 -> n31 
+    n16 -> n32 
+    n35 -> n33 
+    n35 -> n34 
+    n38 -> n37 
+    n36 -> n38 
+    n39 -> n35 
+    n39 -> n36 
+    n16 -> n39 
+    n42 -> n40 
+    n42 -> n41 
+    n47 -> n45 
+    n47 -> n46 
+    n48 -> n44 
+    n48 -> n47 
+    n43 -> n48 
+    n49 -> n42 
+    n49 -> n43 
+    n16 -> n49 
+    n52 -> n50 
+    n52 -> n51 
+    n53 -> n52 
+    n16 -> n53 
+    n55 -> n54 
+    n16 -> n55 
+    n58 -> n56 
+    n58 -> n57 
+    n59 -> n58 
+    n16 -> n59 
+    n62 -> n60 
+    n62 -> n61 
+    n63 -> n62 
+    n16 -> n63 
+    n65 -> n64 
+    n16 -> n65 
+    n68 -> n66 
+    n68 -> n67 
+    n69 -> n68 
+    n16 -> n69 
+    n72 -> n70 
+    n72 -> n71 
+    n73 -> n72 
+    n16 -> n73 
+    n9 -> n10 
+    n9 -> n16 
+    n0 -> n9 
+}

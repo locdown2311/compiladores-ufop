@@ -3,16 +3,28 @@ data Ponto {
     y :: Float;
 }
 
-main(p :: Ponto): Int, Float {
-    a = 5;
+inicio (p :: Ponto): Int, Float {
+    a = 10;
     b = 3;
-    c = 2;
-    p.x = (a * b) + c;
-    print p.x;
-}
+    c = -3;
+   teste = false;
+   teste2 = true;
 
-divmod(num :: Int, div :: Int): Int, Int {
-    q = num / div;
-    r = num % div;
-    return 0, a;
+   if (a > 3){
+      print "MAIOR";
+   }
+
+   iterate (a > 2){
+      a = a - 1;
+   }
+   
+   print teste == teste2;
+
+   print "Logico";
+   print teste && teste2;
+   print teste ||  teste2;
+
+   print "Aritmetica";
+   print a+b;
+   print a-b;
 }

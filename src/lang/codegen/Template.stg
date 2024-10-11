@@ -3,46 +3,78 @@ lvalue(name, array) ::= "<name><array>"
 array_access(expr) ::= "[<expr>]"
 boolean_expr(value) ::= "<value>"
 float_expr(value) ::= "<value>"
+string_expr(value) ::= "<value>"
+var_expr(value) ::= "var <value>"
+
+var_dec(variavel) ::= <<
+    var (<variavel>);
+>>
 int_expr(value) ::= "<value>"
-new_array(var, type, expr) ::= "<var> = new <type>[<expr >]; "
-call(name, args) ::= <<<name>(<args; separator=" , " >)>>
-mul_expr(left_expr, right_expr) ::= "(<left_expr > *<right_expr >)"
-div_expr(left_expr, right_expr) ::= "(<left_expr > / <right_expr >)"
-mod_expr(left_expr, right_expr) ::= "(<left_expr > % <right_expr >)"
-add_expr(left_expr, right_expr) ::= "(<left_expr > + <right_expr >)"
-sub_expr(left_expr, right_expr) ::= "(<left_expr > − <right_expr >)"
-lt_expr(left_expr, right_expr) ::= "(<left_expr > < <right_expr >)"
-gt_expr(left_expr, right_expr) ::= "(<left_expr > > <right_expr >)"
-loe_expr(left_expr, right_expr) ::= "(<left_expr > <= <right_expr >)"
-goe_expr(left_expr, right_expr) ::= "(<left_expr > >= <right_expr >)"
-eq_expr(left_expr, right_expr) ::= "(<left_expr > == <right_expr >)"
-neq_expr(left_expr, right_expr) ::= "(<left_expr > != <right_expr >)"
-and_expr(left_expr, right_expr) ::= "(<left_expr > && <right_expr >)"
-or_expr(left_expr, right_expr) ::= "(<left_expr > || <right_expr >)"
+new_array(var, type, expr) ::= "<var> = new <type>[<expr>];"
+call(name, args) ::= "<name>(<args; separator=\", \">)"
+mul_expr(left_expr, right_expr) ::= "(<left_expr> * <right_expr>)"
+div_expr(left_expr, right_expr) ::= "(<left_expr> / <right_expr>)"
+mod_expr(left_expr, right_expr) ::= "(<left_expr> % <right_expr>)"
+add_expr(left_expr, right_expr) ::= "(<left_expr> + <right_expr>)"
+sub_expr(left_expr, right_expr) ::= "(<left_expr> - <right_expr>)"
+lt_expr(left_expr, right_expr) ::= "(<left_expr> \< <right_expr>)"
+gt_expr(left_expr, right_expr) ::= "(<left_expr> \> <right_expr>)"
+loe_expr(left_expr, right_expr) ::= "(<left_expr> \<= <right_expr>)"
+goe_expr(left_expr, right_expr) ::= "(<left_expr> \>= <right_expr>)"
+eq_expr(left_expr, right_expr) ::= "(<left_expr> == <right_expr>)"
+neq_expr(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
+and_expr(left_expr, right_expr) ::= "(<left_expr> && <right_expr>)"
+or_expr(left_expr, right_expr) ::= "(<left_expr> || <right_expr>)"
+
+print_expr(expr) ::= <<
+    System.out.println(<expr>);
+>>
+// Template para o comando de leitura
+read_cmd(lvalue) ::= <<
+    Scanner scanner = new Scanner(System.in);
+    <lvalue> = scanner.next();
+>>
 
 
-print(expr) ::= "System.out.println(<expr>) ; "
-return(expr) ::= "return <expr; separator=",">;"
+return_expr(expr) ::= "return <expr>;"
 
-iterate(expr, stmt) ::= <<
-while(<expr>) {
+data_struct(name, fields) ::= <<
+data <name> {
+    <fields; separator=";\n">
+}
+>>
+
+field(name, type) ::= <<
+<name> :: <type>
+>>
+
+loop_exp(expr, stmt) ::= <<
+while (<expr>) {
     <stmt>
 }
 >>
 
-if(expr, thn, els) ::= <<
-if(<expr>) {
-<thn>
-} <if(els)>else {
-<els>
+func(type, name, params, decl, stmt) ::= <<
+static <name> (<params; separator=", ">) <type> {
+    <if(decl)><decl; separator=";\n"><endif>;
+    <stmt>
+}
+>>
+
+if_expr(cond_expr, then_expr, else_expr) ::= <<
+if (<cond_expr>) {
+    <then_expr>
+} <if(else_expr)>else {
+    <else_expr>
 }
 <endif>
 >>
 
-func(type, name, params, decl, stmt) ::= <<
-static <type> <name>(<params; separator=" , " >) {
-    <if (decl)><decl; separator=",\n" >;<endif>
-    <stmt>
+program(name, funcs) ::= <<
+public <name> {
+    <funcs; separator="\n\n">
+    public static void main(String[] args) {
+        inicio();
+    }
 }
 >>
-

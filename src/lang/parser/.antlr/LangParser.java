@@ -1654,16 +1654,19 @@ public class LangParser extends Parser {
 	public static class LogicalAndExpContext extends ParserRuleContext {
 		public Exp expr;
 		public EqualityExpContext e1;
-		public EqualityExpContext e2;
-		public List<EqualityExpContext> equalityExp() {
-			return getRuleContexts(EqualityExpContext.class);
-		}
-		public EqualityExpContext equalityExp(int i) {
-			return getRuleContext(EqualityExpContext.class,i);
+		public AdditiveExpContext e2;
+		public EqualityExpContext equalityExp() {
+			return getRuleContext(EqualityExpContext.class,0);
 		}
 		public List<TerminalNode> LOGICAL_AND() { return getTokens(LangParser.LOGICAL_AND); }
 		public TerminalNode LOGICAL_AND(int i) {
 			return getToken(LangParser.LOGICAL_AND, i);
+		}
+		public List<AdditiveExpContext> additiveExp() {
+			return getRuleContexts(AdditiveExpContext.class);
+		}
+		public AdditiveExpContext additiveExp(int i) {
+			return getRuleContext(AdditiveExpContext.class,i);
 		}
 		public LogicalAndExpContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1690,7 +1693,7 @@ public class LangParser extends Parser {
 				setState(326);
 				match(LOGICAL_AND);
 				setState(327);
-				((LogicalAndExpContext)_localctx).e2 = equalityExp();
+				((LogicalAndExpContext)_localctx).e2 = additiveExp();
 				 ((LogicalAndExpContext)_localctx).expr =  new And(_localctx.expr, ((LogicalAndExpContext)_localctx).e2.expr); 
 				}
 				}
@@ -2611,8 +2614,8 @@ public class LangParser extends Parser {
 		"\2\u013f\u0140\b\32\1\2\u0140\u0142\3\2\2\2\u0141\u013d\3\2\2\2\u0142"+
 		"\u0145\3\2\2\2\u0143\u0141\3\2\2\2\u0143\u0144\3\2\2\2\u0144\63\3\2\2"+
 		"\2\u0145\u0143\3\2\2\2\u0146\u0147\5\66\34\2\u0147\u014e\b\33\1\2\u0148"+
-		"\u0149\7#\2\2\u0149\u014a\5\66\34\2\u014a\u014b\b\33\1\2\u014b\u014d\3"+
-		"\2\2\2\u014c\u0148\3\2\2\2\u014d\u0150\3\2\2\2\u014e\u014c\3\2\2\2\u014e"+
+		"\u0149\7#\2\2\u0149\u014a\5:\36\2\u014a\u014b\b\33\1\2\u014b\u014d\3\2"+
+		"\2\2\u014c\u0148\3\2\2\2\u014d\u0150\3\2\2\2\u014e\u014c\3\2\2\2\u014e"+
 		"\u014f\3\2\2\2\u014f\65\3\2\2\2\u0150\u014e\3\2\2\2\u0151\u0152\58\35"+
 		"\2\u0152\u0159\b\34\1\2\u0153\u0154\t\2\2\2\u0154\u0155\58\35\2\u0155"+
 		"\u0156\b\34\1\2\u0156\u0158\3\2\2\2\u0157\u0153\3\2\2\2\u0158\u015b\3"+

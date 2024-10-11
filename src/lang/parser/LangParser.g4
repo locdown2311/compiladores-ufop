@@ -194,7 +194,7 @@ logicalOrExp
 logicalAndExp
 	returns[Exp expr]:
 	e1 = equalityExp { $expr = $e1.expr; } (
-		LOGICAL_AND e2 = equalityExp { $expr = new And($expr, $e2.expr); }
+		LOGICAL_AND e2 = additiveExp { $expr = new And($expr, $e2.expr); }
 	)*;
 
 equalityExp

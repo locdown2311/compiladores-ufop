@@ -20,6 +20,7 @@ public class CRead extends CNode {
         System.out.print("Digite um valor: ");
         Object value = scanner.nextLine();
     }
+    
     public void accept (Visitor v) {v.visit(this);}
 
     @Override

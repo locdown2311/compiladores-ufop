@@ -1805,16 +1805,19 @@ public class LangParser extends Parser {
 	public static class LogicalAndExpContext extends ParserRuleContext {
 		public Exp expr;
 		public EqualityExpContext e1;
-		public EqualityExpContext e2;
-		public List<EqualityExpContext> equalityExp() {
-			return getRuleContexts(EqualityExpContext.class);
-		}
-		public EqualityExpContext equalityExp(int i) {
-			return getRuleContext(EqualityExpContext.class,i);
+		public AdditiveExpContext e2;
+		public EqualityExpContext equalityExp() {
+			return getRuleContext(EqualityExpContext.class,0);
 		}
 		public List<TerminalNode> LOGICAL_AND() { return getTokens(LangParser.LOGICAL_AND); }
 		public TerminalNode LOGICAL_AND(int i) {
 			return getToken(LangParser.LOGICAL_AND, i);
+		}
+		public List<AdditiveExpContext> additiveExp() {
+			return getRuleContexts(AdditiveExpContext.class);
+		}
+		public AdditiveExpContext additiveExp(int i) {
+			return getRuleContext(AdditiveExpContext.class,i);
 		}
 		public LogicalAndExpContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1846,7 +1849,7 @@ public class LangParser extends Parser {
 				setState(326);
 				match(LOGICAL_AND);
 				setState(327);
-				((LogicalAndExpContext)_localctx).e2 = equalityExp();
+				((LogicalAndExpContext)_localctx).e2 = additiveExp();
 				 ((LogicalAndExpContext)_localctx).expr =  new And(_localctx.expr, ((LogicalAndExpContext)_localctx).e2.expr); 
 				}
 				}
@@ -2919,7 +2922,7 @@ public class LangParser extends Parser {
 		"\u0000\u0141\u013f\u0001\u0000\u0000\u0000\u0141\u0142\u0001\u0000\u0000"+
 		"\u0000\u01421\u0001\u0000\u0000\u0000\u0143\u0141\u0001\u0000\u0000\u0000"+
 		"\u0144\u0145\u00034\u001a\u0000\u0145\u014c\u0006\u0019\uffff\uffff\u0000"+
-		"\u0146\u0147\u0005!\u0000\u0000\u0147\u0148\u00034\u001a\u0000\u0148\u0149"+
+		"\u0146\u0147\u0005!\u0000\u0000\u0147\u0148\u00038\u001c\u0000\u0148\u0149"+
 		"\u0006\u0019\uffff\uffff\u0000\u0149\u014b\u0001\u0000\u0000\u0000\u014a"+
 		"\u0146\u0001\u0000\u0000\u0000\u014b\u014e\u0001\u0000\u0000\u0000\u014c"+
 		"\u014a\u0001\u0000\u0000\u0000\u014c\u014d\u0001\u0000\u0000\u0000\u014d"+

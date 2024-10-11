@@ -2,7 +2,6 @@ package lang.nodes.expr;
 
 import lang.codegen.Visitor;
 import lang.nodes.dotutils.DotFile;
-import lang.nodes.dotutils.DotFile;
 import lang.nodes.environment.Env;
 
 public class Plus extends BinOp {
@@ -15,10 +14,14 @@ public class Plus extends BinOp {
         Object re, rd;
         re = getLeft().eval(e);
         rd = getRight().eval(e);
-        if ((re instanceof Integer) && (re instanceof Integer)) {
+        System.out.println("Left operand: " + re + ", Right operand: " + rd); // Adiciona log
+
+        if ((re instanceof Integer) && (rd instanceof Integer)) {
+            System.out.println("Integer addition: " + re + " + " + rd); // Adiciona log
             return ((Integer) re + (Integer) rd);
         }
-        if ((re instanceof Float) && (re instanceof Float)) {
+        if ((re instanceof Float) && (rd instanceof Float)) {
+            System.out.println("Float addition: " + re + " + " + rd); // Adiciona log
             return ((Float) re + (Float) rd);
         }
         throw new RuntimeException("operador + : argumentos inválidos");

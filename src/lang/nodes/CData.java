@@ -32,7 +32,16 @@ public class CData extends CFuncDef {
     }
 
     public int toDot(DotFile d) {
-        return 0;
+        int root = d.addNode("Data:");
+        int nv = d.addNode(typeName);
+        int c = 0;
+        for (CVarDec cVarDec : decls) {
+            c = cVarDec.toDot(d);
+            d.addEdge(root, c);
+        }
+        d.addEdge(root, nv);
+        d.addEdge(root, c);
+        return root;
     }
 
 }

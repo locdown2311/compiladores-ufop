@@ -17,8 +17,9 @@ public class CAttr extends CNode {
        this.e = e;
    }
 
-   public Exp getExp() { return e; }
    public Exp getLval() { return lval; }
+   public Exp getExp() { return e; }
+   
 
    public void interp(Env env) {
        if (lval instanceof Var) {

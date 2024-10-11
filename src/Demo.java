@@ -13,6 +13,7 @@ import lang.nodes.environment.Env;
 import lang.nodes.dotutils.*;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public class Demo {
 
@@ -40,7 +41,8 @@ public class Demo {
 
         parser.setBuildParseTree(false);
 
-        prg = (CProg) parser.prog().c;
+        LangParser.ProgContext progContext = parser.prog();
+        prg = progContext.c;
     }
 
     public static void runDot(String inputFile) throws IOException {
@@ -56,13 +58,10 @@ public class Demo {
     }
 
     public static void runInterpreter(String inputFile) throws IOException {
-        LangLexer lexer = new LangLexer(CharStreams.fromFileName(inputFile));
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        tokens.fill();
-        LangParser parser = new LangParser(tokens);
-        parser.setBuildParseTree(false);
         Env env = new Env();
-        prg = (CProg) parser.prog().c;
+        if (prg == null) {
+            runParser(inputFile);
+        }
         prg.interp(env);
 
     }
@@ -72,11 +71,17 @@ public class Demo {
             runParser(path);
         }
         Env env = new Env();
-        TVisitor tv = new TVisitor();
-        prg.accept(tv);
-        CodeGen v = new CodeGen(env);
+        //TVisitor tv = new TVisitor();
+        //prg.accept(tv);
+        CodeGen v = new CodeGen(prg,env,"lang/codegen/Template.stg");
+
         prg.accept(v);
-        //v.printProgram();
+        String uuid = UUID.randomUUID().toString();
+        String fileName = path + uuid + ".java";
+
+        System.out.println(fileName);
+        v.generateCode(fileName);
+        // v.printProgram();
 
         return;
     }
