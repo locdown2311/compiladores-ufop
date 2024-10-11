@@ -35,7 +35,7 @@ O grupo utilizou o padrão Visitor, com AST criadas manualmente conforme demonst
 
 ### 1.5 Representação da Árvore de Sintaxe Abstrata (AST)
 
-![Figura 1: Representação da AST após a execução do arquivo pessoal.lan]([AST.png](https://github.com/locdown2311/compiladores-ufop/blob/tp-03/output.png))
+![Figura 1: Representação da AST após a execução do arquivo pessoal.lan]([AST.png](https://github.com/locdown2311/compiladores-ufop/blob/tp-03/src/output.png))
 
 
 ### 1.6 Exemplo de Código de Execução
