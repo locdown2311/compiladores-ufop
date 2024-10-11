@@ -1,4 +1,4 @@
-# Relatório de Projeto: Analisador Sintático
+# Relatório de Projeto: Gerador de Código
 
 **Autores:** Igor Carvalho Guimarães, Rafael Henrique Suzuki
 
@@ -16,20 +16,26 @@ Todos os testes executados foram realizados em servidor Linux na arquitetura ARM
 
 **ANTLR4:** É um poderoso gerador de analisadores sintáticos que pode ser usado para ler, processar, executar ou traduzir texto estruturado ou arquivos binários. É amplamente utilizado para construir linguagens, ferramentas e frameworks.
 
-### 1.3 Estratégia de Implementação do Analisador Sintático
+### 1.3 Estratégia de Implementação do Gerador de código
 
-- Método: LL(*)
-- Separação entre léxico e sintático: Sim
+- Ferramenta: String Template
 
-O ANTLR4 utiliza o algoritmo LL(*), uma variação do LL(k) que permite uma análise mais eficiente e flexível. A separação entre análise léxica e sintática é mantida, com o ANTLR gerando um lexer e um parser separados.
+A implementação do gerador de código foi baseada na ferramenta String Template, que permite a criação de templates para a geração dinâmica de código. A estratégia envolveu as seguintes etapas:
+
+- Definição dos Templates: Criamos templates para as diferentes construções da linguagem alvo, garantindo que cada parte da AST fosse traduzida corretamente em código.
+- Integração com ANTLR4: Integramos a geração de código ao processo de análise sintática, de modo que, ao construir a AST, o gerador de código fosse chamado para produzir a saída desejada.
+Manutenção da Estrutura: Durante a implementação, focamos em manter uma estrutura clara e modular, permitindo fácil manutenção e extensibilidade no futuro.
+- Testes Automatizados: Desenvolvemos uma série de testes automatizados para garantir que a saída gerada correspondia às expectativas e que as modificações nos templates não introduzissem erros.
+Documentação: A documentação dos templates e do processo de geração de código foi realizada para facilitar o entendimento e a utilização por outros desenvolvedores.
+
 
 ### 1.4 Estratégia de Interpretação
 
-O grupo não teve sucesso na implementação da interpretação, porém chegou a testar o modelo visitor do próprio ANTLR. Também foram testados JCUP e Beaver na análise sintática, porém o ANTLR foi o que obteve maior sucesso.
+O grupo utilizou o padrão Visitor, com AST criadas manualmente conforme demonstradas pelo professor.
 
 ### 1.5 Representação da Árvore de Sintaxe Abstrata (AST)
 
-![Figura 1: Representação da AST após a execução do arquivo pessoal.lan]([Captura de tela 2024-09-30 103934.png](https://github.com/locdown2311/compiladores-ufop/blob/tp-02/Captura%20de%20tela%202024-09-30%20103934.png))
+![Figura 1: Representação da AST após a execução do arquivo pessoal.lan]([AST.png](https://github.com/locdown2311/compiladores-ufop/blob/tp-03/output.png))
 
 
 ### 1.6 Exemplo de Código de Execução
@@ -39,10 +45,10 @@ Para compilar e executar o analisador, utilizamos os seguintes comandos:
 ```bash
 # Compilação
 make
-javac -cp .:tools/antlr-4.13.2-complete.jar Demo.java
+javac -cp .:tools/antlr-4.13.2-complete.jar:tools/ST-4.3.4.jar Demo.java
 
 # Execução
-java -cp .:tools/antlr-4.13.2-complete.jar Demo arquivotexto
+java -cp .:tools/antlr-4.13.2-complete.jar:tools/ST-4.3.4.jar Demo -g arquivotexto
 
 ```
 
@@ -54,14 +60,6 @@ Alcançamos os seguintes objetivos:
 
 1. Implementação bem-sucedida do analisador léxico e sintático.
 2. Geração da Árvore de Sintaxe Abstrata (AST) para os arquivos de entrada.
-3. Realização de testes abrangentes em diferentes arquiteturas (ARM e AMD).
+3. Geração de código Source to Source
 
-Embora não tenhamos conseguido implementar a análise semântica e a interpretação nesta fase do projeto, estes desafios nos proporcionaram valiosas lições e insights. Exploramos diferentes abordagens, incluindo o modelo visitor do ANTLR e outras ferramentas como JCUP e Beaver, o que ampliou nossa compreensão das complexidades envolvidas na análise e interpretação de linguagens.
-
-Para a próxima fase do projeto, nos comprometemos a:
-
-1. Implementar a análise semântica.
-2. Desenvolver a interpretação completa da linguagem.
-3. Refinar e otimizar o analisador sintático existente.
-
-Este projeto tem sido uma excelente oportunidade de aprendizado, permitindo-nos aplicar conceitos teóricos em um cenário prático de desenvolvimento de compiladores. Estamos ansiosos para superar os desafios remanescentes e entregar um analisador completo e funcional na próxima etapa do trabalho.
+Este projeto tem sido uma excelente oportunidade de aprendizado, permitindo-nos aplicar conceitos teóricos em um cenário prático de desenvolvimento de compiladores.
